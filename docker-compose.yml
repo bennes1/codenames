@@ -1,0 +1,23 @@
+version: "3.8"
+services:
+        web:
+                build: ./node/.
+                ports:
+                        - 8080:8080
+                depends_on:
+                        - mongodb
+                volumes:
+                       - ./application:/usr/src/app/application
+                command: npm run-script dev
+        mongodb:
+                image : mongo
+                container_name: mongodb
+                environment:
+                        - PUID=1000
+                        - PGID=1000
+                volumes:
+                        - ./mongodb/database:/data/db
+                ports:
+                        - 27017:27017
+                restart: unless-stopped
+                command: mongod --quiet --logpath /dev/null

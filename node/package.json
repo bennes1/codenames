@@ -1,0 +1,15 @@
+{
+  "name": "codenames",
+  "version": "1.0.0",
+  "description": "Codenames with node.js",
+  "author": "Samuel Bennett <samuel.paul.bennett@gmail.com>",
+  "main": "application/server.js",
+  "scripts": {
+    "start": "node application/server.js",
+    "dev": "nodemon application/server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.6.1"
+  }
+}
