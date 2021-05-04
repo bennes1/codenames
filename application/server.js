@@ -9,7 +9,7 @@ app.get("/", (req, res) => {
 	res.send("Successful response");
 });
 app.get("/users", async (req, res) => {
-	const users = await User.find({});
+	const users = await User.find({}).exec();
 
 	res.json(users);
 });

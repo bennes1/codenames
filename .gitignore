@@ -1,4 +1,4 @@
-mongodb/database/*
 node/node_modules/*
 npm-debug*
 package-lock.json
+!*.save

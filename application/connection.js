@@ -1,6 +1,6 @@
 // connection.js
 const mongoose = require("mongoose");
-const connection = "mongodb://mongodb:27017/codenames";
+const connection = "mongodb://user:pass@mong:27017/codenames";
 
 mongoose.connect(connection, {
 	useNewUrlParser: true,
@@ -11,3 +11,7 @@ mongoose.connect(connection, {
 
 // setup schema
 const User = require("./User.model");
+
+function handleError(error) {
+	console.log("DB failed to connect.");
+}
