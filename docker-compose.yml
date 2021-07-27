@@ -16,3 +16,13 @@ services:
                 restart: unless-stopped
                 ports:
                         - '27017:27017'
+                volumes:
+                        - 'mongologs:/var/log/mongodb'
+                        - 'mongodata:/data/db'
+                command:
+                        - "--auth"
+                        - "--logpath"
+                        - "/var/log/mongodb/mongod.log"
+volumes:
+        mongodata:
+        mongologs:
