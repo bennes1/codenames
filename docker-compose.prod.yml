@@ -1,0 +1,15 @@
+version: "3.3"
+services:
+  web:
+    command: npm run-script start
+  mong:
+    volumes:
+      - 'mongologs:/var/log/mongodb'
+      - 'mongodata:/data/db'
+    command:
+      - "--auth"
+      - "--logpath"
+      - "/var/log/mongodb/mongod.log"
+volumes:
+  mongodata:
+  mongologs:

@@ -9,6 +9,9 @@ COPY package*.json /usr/src/app
 RUN npm install -g nodemon
 RUN npm install
 
-ADD ./node_modules /usr/src/app/node_modules
+COPY application /usr/src/app/application
+RUN chmod -R 755 /usr/src/app/application
+
+COPY ./node_modules /usr/src/app/node_modules
 
 EXPOSE 8080

@@ -1,0 +1,10 @@
+version: "3.3"
+services:
+  web:
+    volumes:
+      - ./node/application:/usr/src/app/application
+  mong:
+    volumes:
+      - ./mongodb/scripts:/scripts
+      - ./mongodb/load_pictures:/load_pictures
+      - ./mongodb/load_words:/load_words

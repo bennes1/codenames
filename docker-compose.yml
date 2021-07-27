@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3.3"
 services:
         web:
                 build: ./node/.
@@ -6,8 +6,6 @@ services:
                         - 8080:8080
                 depends_on:
                         - mong
-                volumes:
-                       - ./application:/usr/src/app/application
                 command: npm run-script dev
         mong:
                 build: ./mongodb/.
@@ -16,13 +14,8 @@ services:
                 restart: unless-stopped
                 ports:
                         - '27017:27017'
-                volumes:
-                        - 'mongologs:/var/log/mongodb'
-                        - 'mongodata:/data/db'
-                command:
-                        - "--auth"
-                        - "--logpath"
-                        - "/var/log/mongodb/mongod.log"
-volumes:
-        mongodata:
-        mongologs:
+                environment:
+                        - MONGO_INITDB_ROOT_USERNAME=admin
+                        - MONGO_INITDB_ROOT_PASSWORD=pass
+                entrypoint: /usr/local/bin/docker-entrypoint.sh
+                command: "--auth"
