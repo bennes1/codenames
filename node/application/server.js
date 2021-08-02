@@ -1,25 +1,25 @@
 // server.js
 const express = require("express");
 const app = express();
-const connectDb = require("./connection");
+const client = require("./connection");
 const PORT = 8080;
-const User = require("./User.model");
 
 app.get("/", (req, res) => {
 	res.send("Successful response");
 });
-app.get("/users", async (req, res) => {
-	const users = await User.find({}).exec();
 
-	res.json(users);
+app.get("/test", async (req, res) => {
+	const asset = await client
+		.collection("asset")
+		.find({name: /businessman/})
+		.next();
+
+	let image = "<img src=\"data:image/jpeg;base64," + asset.value + "\"/>";
+	res
+		.status(200)
+		.send(image);
 });
-app.get("/user-create", (req, res) => {
-	const user = new User ({username: "userTest" });
-	user.save()
-		.then(() => console.log("User created"))
-		.catch(() => console.log("User failed creation"));
-	res.send("User created \n");
-})
+
 app.listen(PORT, function() {
  console.log(`Listening on ${PORT}`);
 });

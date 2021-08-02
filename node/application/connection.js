@@ -1,17 +1,12 @@
-// connection.js
-const mongoose = require("mongoose");
-const connection = "mongodb://user:pass@mong:27017/codenames";
-
-mongoose.connect(connection, {
+const {MongoClient} = require('mongodb');
+const uri = "mongodb://user:pass@mong:27017/codenames";
+const client = new MongoClient(uri, {
 	useNewUrlParser: true,
-	useUnifiedTopology:true 
-})
-	.then("Mongo connected.")
-	.catch(error => handleError(error));
+	useUnifiedTopology: true
+});
 
-// setup schema
-const User = require("./User.model");
+client.connect()
+.catch(console.log("Mongo connection failed."))
+.then(console.log("Mongo connected."));
 
-function handleError(error) {
-	console.log("DB failed to connect.");
-}
+module.exports = client.db("codenames");
