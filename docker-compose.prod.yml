@@ -1,6 +1,10 @@
 version: "3.3"
 services:
-  web:
+  frontend:
+    command: serve -s /app/build
+    ports:
+      - '5000:5000'
+  backend:
     command: npm run-script start
   mong:
     volumes:

@@ -1,8 +1,11 @@
 version: "3.3"
 services:
-  web:
+  frontend:
     volumes:
-      - ./node/application:/usr/src/app/application
+      - ./frontend:/app
+  backend:
+    volumes:
+      - ./backend:/usr/src/app
   mong:
     volumes:
       - ./mongodb/scripts:/scripts

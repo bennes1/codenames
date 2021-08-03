@@ -25,7 +25,7 @@ function appgo() {
 			cmd="mongosh -u admin -p pass"
 			;;
 		webshell)
-			container="codenames_web"
+			container="codenames_frontend"
 			cmd="bash"
 			;;
 	esac
