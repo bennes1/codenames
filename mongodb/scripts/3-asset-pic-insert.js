@@ -5,10 +5,9 @@ const path = require('path');
 const walk = require("/scripts/includes/walk.js");
 
 async function doMain() {
-    print("Get pictures...");
     let pictures = await walk("/load_pictures");
 
-    print("Read pictures...");
+    print("Adding pictures...");
     await Promise.all(pictures.map(async picture => {
         const data = await fs.readFile(picture, "base64");
 
@@ -18,7 +17,6 @@ async function doMain() {
             source = "";
         }
 
-        print("Picture is " + picture + "...");
         db.asset.insertOne({
             type: "picture",
             name: picture,
