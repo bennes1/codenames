@@ -1,0 +1,10 @@
+/* dropdowns all widths. */
+.dropdown-toggle,
+.dropdown-menu {
+  width: 100%;
+}
+
+/* Spacing between form rows. */
+.row {
+  padding-bottom: 5px;
+}
