@@ -1,9 +1,9 @@
 version: "3.3"
 services:
   frontend:
-    command: serve -s /app/build
-    ports:
-      - '5000:5000'
+    build:
+      context: ./frontend/.
+      dockerfile: Dockerfile.prod
   backend:
     command: npm run-script start
   mong:

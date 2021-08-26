@@ -1,14 +1,18 @@
 version: "3.3"
 services:
         frontend:
-                build: ./frontend/.
+                build:
+                        context: ./frontend/.
+                        dockerfile: Dockerfile.dev
                 ports:
                         - '${FRONTEND_PORT}:${FRONTEND_PORT}'
                 environment:
                         - CHOKIDAR_USEPOLLING=true
                         - PORT=${FRONTEND_PORT}
                         - WDS_SOCKET_PORT=${FRONTEND_PORT}
-                command: npm start
+                        - DOLLAR_SIGN=${DOLLAR_SIGN}
+                volumes:
+                        - 'frontmodules:/app/node_modules'
         backend:
                 build: ./backend/.
                 ports:
@@ -17,6 +21,8 @@ services:
                         - PORT=${BACKEND_PORT}
                         - WDS_SOCKET_PORT=${BACKEND_PORT}
                 command: npm run-script dev
+                volumes:
+                        - 'backmodules:/usr/src/app/node_modules'
         revproxy:
                 build: ./nginx/.
                 ports:
@@ -40,3 +46,6 @@ services:
                         - MONGO_INITDB_ROOT_PASSWORD=pass
                 entrypoint: /usr/local/bin/docker-entrypoint.sh
                 command: "--auth"
+volumes:
+        frontmodules:
+        backmodules:
