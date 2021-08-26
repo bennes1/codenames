@@ -11,4 +11,4 @@ COPY application /usr/src/app/application/
 RUN npm install -g nodemon
 RUN npm install
 
-EXPOSE 8080
+EXPOSE ${PORT}

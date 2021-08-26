@@ -1,0 +1,25 @@
+worker_processes 1;
+
+events { worker_connections 1024; }
+
+http {
+  upstream frontend {
+    server frontend:${FRONTEND_PORT};
+  }
+
+  upstream backend {
+    server backend:${BACKEND_PORT};
+  }
+
+  server {
+    listen ${PORT};
+
+    location / {
+      proxy_pass http://frontend;
+    }
+
+    location /api {
+      proxy_pass http://backend;
+    }
+  }
+}

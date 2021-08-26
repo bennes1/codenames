@@ -3,23 +3,31 @@ services:
         frontend:
                 build: ./frontend/.
                 ports:
-                        - '3001:3000'
+                        - '${FRONTEND_PORT}:${FRONTEND_PORT}'
                 environment:
                         - CHOKIDAR_USEPOLLING=true
+                        - PORT=${FRONTEND_PORT}
+                        - WDS_SOCKET_PORT=${FRONTEND_PORT}
                 command: npm start
-                depends_on:
-                        - mong
-                        - backend
         backend:
                 build: ./backend/.
-                environment:
-                        API_HOST: ${API_HOST}
-                        APP_SERVER_PORT: ${APP_SERVER_PORT}
                 ports:
-                        - '8080:8080'
-                depends_on:
-                        - mong
+                        - '${BACKEND_PORT}:${BACKEND_PORT}'
+                environment:
+                        - PORT=${BACKEND_PORT}
+                        - WDS_SOCKET_PORT=${BACKEND_PORT}
                 command: npm run-script dev
+        revproxy:
+                build: ./nginx/.
+                ports:
+                        - '${NGINX_PORT}:${NGINX_PORT}'
+                environment:
+                        - PORT=${NGINX_PORT}
+                        - WDS_SOCKET_PORT=${NGINX_PORT}
+                        - FRONTEND_PORT=${FRONTEND_PORT}
+                        - BACKEND_PORT=${BACKEND_PORT}
+                        - DOLLAR_SIGN=${DOLLAR_SIGN}
+                restart: always
         mong:
                 build: ./mongodb/.
                 hostname: mong
