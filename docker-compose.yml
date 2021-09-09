@@ -11,6 +11,7 @@ services:
                         - PORT=${FRONTEND_PORT}
                         - WDS_SOCKET_PORT=${FRONTEND_PORT}
                         - DOLLAR_SIGN=${DOLLAR_SIGN}
+                        - FAST_REFRESH=false
                 volumes:
                         - 'frontmodules:/app/node_modules'
         backend:
