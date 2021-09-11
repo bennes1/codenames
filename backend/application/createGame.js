@@ -18,7 +18,7 @@ async function createGame(db, size, type) {
 	if (["5x5", "5x4"].indexOf(size) == -1) {
 		throw "Size is not allowed.";
 	}
-	if (["word", "picture", "both"].indexOf(type) == -1) {
+	if (["W", "P", "B"].indexOf(type) == -1) {
 		throw "Type is not allowed.";
 	}
 
@@ -128,10 +128,10 @@ function setupGridColors(size) {
 	let starter = null;
 	if (coinflip >= 0.5) {
 		blues++;
-		starter = "blue";
+		starter = "B";
 	} else {
 		reds++;
-		starter = "red";
+		starter = "R";
 	}
 
 	let whites = amount - assassins - blues - reds;

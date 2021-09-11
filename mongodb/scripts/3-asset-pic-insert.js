@@ -18,7 +18,7 @@ async function doMain() {
         }
 
         db.asset.insertOne({
-            type: "picture",
+            type: "P",
             name: picture,
             value: data,
             collection: source

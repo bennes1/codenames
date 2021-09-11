@@ -9,7 +9,7 @@ db.createCollection("asset", {
 			required: ["type", "name", "value", "collection"],
 			properties: {
 				type: {
-					enum: ["word", "picture"],
+					enum: ["W", "P"],
 					description: "This must be word or picture."
 				},
 				name: {

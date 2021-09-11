@@ -29,7 +29,7 @@ async function doMain() {
             if (word.length > 0 && !db.asset.findOne({value: word})) {
 
                 db.asset.insertOne({
-                    type: "word",
+                    type: "W",
                     name: word,
                     value: word,
                     collection: source

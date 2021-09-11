@@ -24,13 +24,13 @@ class TypeDDL extends React.Component {
     let state = {text: event.target.text};
     switch (state.text) {
       case "Pictures":
-        state.value = "picture";
+        state.value = "P";
         break;
       case "Words":
-        state.value = "word";
+        state.value = "W";
         break;
       case "Both":
-        state.value = "both";
+        state.value = "B";
         break;
       default:
         state.text = "";

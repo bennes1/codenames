@@ -12,7 +12,7 @@ db.createCollection("game", {
 					// Make this flexible in case there are more sizes to try.
 				},
 				type: {
-					enum: ["word", "picture", "both"],
+					enum: ["W", "P", "B"],
 					description: "The type of game could have pictures and/or words."
 				},
 				startDate: {
@@ -34,7 +34,7 @@ db.createCollection("game", {
 					description: "This is an array of the four colors: black, white, red & blue."
 				},
 				starter: {
-					enum: ["blue", "red"],
+					enum: ["B", "R"],
 					description: "This is which team starts the game."
 				}
 			}
