@@ -74,7 +74,7 @@ const rearrangeGameGrid = (game, role) => {
 			let record = {};
 
 			if (game.type === "B") {
-				record.type = counter % 2 === 0 ? "P" : "W";
+				record.type = counter % 2 === 1 ? "P" : "W";
 			} else {
 				record.type = game.type;
 			}

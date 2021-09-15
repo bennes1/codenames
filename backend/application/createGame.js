@@ -78,23 +78,25 @@ async function returnRandAssetArray(collection, type, amount) {
 async function setupGridAssets(collection, amount, type) {
 
 	let wpList = [];
-	if (type == "both") {
+	if (type === "B") {
 		// This is different
-		let picAmount = amount % 2 == 1 ? amount / 2 + 1 : amount / 2;
+		let picAmount = amount % 2 === 1 ? amount / 2 + 1 : amount / 2;
 		let wordAmount = amount / 2;
+
 		let pics = await returnRandAssetArray(
-			collection, "picture", picAmount
+			collection, "P", picAmount
 		);
 		let words = await returnRandAssetArray(
-			collection, "word", wordAmount
+			collection, "W", wordAmount
 		);
 
 		// It needs to alternate between pictures and words
-		for(let i = 0; i != amount; i++) {
-			if (i % 2 == 1) {
-				wpList.push(pics[i]);
+		let wordCounter = 0, picCounter = 0;
+		for(let i = 0; i !== amount; i++) {
+			if (i % 2 === 1) {
+				wpList.push(pics[picCounter++]);
 			} else {
-				wpList.push(words[i]);
+				wpList.push(words[wordCounter++]);
 			}
 		}
 	} else {
