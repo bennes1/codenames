@@ -16,4 +16,26 @@ async function mongoConnect() {
 	return connection;
 }
 
-module.exports = mongoConnect;
+/**
+ * stringToObjectId
+ * This is a helper function to return the object id.  I wrapped the error
+ * message as my usage is to try it without knowing if it is a valid object id
+ * or not.
+ */
+const stringToObjectId = (id) => {
+	const {ObjectId} = require("mongodb");
+	// Nasty error if objectId does not exist.  Don't need to look if doesn't
+	// exist.
+	let objectId = null;
+	try {
+		objectId = new ObjectId(id);
+		return objectId;
+	} catch (e) {
+		return null;
+	}
+}
+
+module.exports = {
+	mongoConnect,
+	stringToObjectId
+};
