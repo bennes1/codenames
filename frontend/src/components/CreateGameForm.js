@@ -3,6 +3,8 @@ import TypeDDL from './TypeDDL';
 import {Container, Row, Col} from 'react-bootstrap';
 import { withRouter } from "react-router";
 import ErrorAlert from './ErrorAlert';
+import '../css/form.css';
+
 
 /**
  * CreateGameForm

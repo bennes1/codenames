@@ -1,25 +1,23 @@
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './css/codenames.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
-import CreateGamePage from './pages/CreateGamePage';
-import PlayGamePage from './pages/PlayGamePage';
-import WelcomePage from './pages/WelcomePage';
+import WelcomePage from './components/WelcomePage';
+import GamePage from './components/GamePage';
 
 ReactDOM.render((
     <BrowserRouter>
       <Switch>
         <Route exact path="/" component={WelcomePage} />
-        <Route exact path="/createGame" component={CreateGamePage} />
+        <Route exact path="/createGame" component={WelcomePage} />
 
         // Keep the default file there for now for learning.
         <Route exact path="/test" component={App} />
-        <Route path="/*" component={PlayGamePage} />
+        <Route path="/*" component={GamePage} />
       </Switch>
     </BrowserRouter>
   ),
