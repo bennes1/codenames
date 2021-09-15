@@ -9,6 +9,10 @@ async function doMain() {
 
     print("Adding pictures...");
     await Promise.all(pictures.map(async picture => {
+        if (path.basename(picture) === ".save") {
+            return;
+        }
+
         const data = await fs.readFile(picture, "base64");
 
         let source = picture.split("/");
@@ -17,7 +21,7 @@ async function doMain() {
             source = "";
         }
 
-        db.asset.insertOne({
+        await db.asset.insertOne({
             type: "P",
             name: picture,
             value: data,
@@ -27,7 +31,6 @@ async function doMain() {
     }));
 }
 
-db.asset.deleteMany({type: "picture"});
 doMain().then(data => {
     print("Picture inserts completed.");
 });
