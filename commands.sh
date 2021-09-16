@@ -11,7 +11,7 @@ function runapp() {
 	fi
 
 	docker-compose down && \
-	docker-compose -f $file1 -f $file2 up --build &
+	docker-compose -f $file1 -f $file2 up &
 }
 
 function appgo() {
