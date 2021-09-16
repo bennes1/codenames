@@ -1,3 +1,5 @@
+const { getGuessesAfter } = require('./manipulateGuess');
+
 /**
  * findGame
  * @param db -- the database connection
@@ -13,7 +15,7 @@ const findGame = async (db, gameid) => {
 
 	let game = await gameCollection.distinct("_id", {"_id": gameid});
 	return game.length > 0 ? game[0] : null;
-}
+};
 
 /**
  * retrieveGameGrid
@@ -31,42 +33,58 @@ const retrieveGameGrid = async (db, gameid, role) => {
 	if (!gameid) {
 		throw "Game id is required.";
 	}
-	let gameCollection = db.collection("game");
+	const gameCollection = db.collection("game");
 
-	let game = await gameCollection.findOne({_id: gameid});
+	const game = await gameCollection.findOne({_id: gameid});
 
 	if (!game) {
 		throw "Game was not found.";
 	}
 
-	return rearrangeGameGrid(game, role);
-}
+	const guesses = await getGuessesAfter(db, gameid);
+
+	let lastid = null, guessMap = {};
+	if (guesses && guesses.length > 0) {
+		for(let i = 0; i != guesses.length; i++) {
+			if (i == 0) {
+				lastid = guesses[i]._id;
+			}
+			guessMap[guesses[i].position] = guesses[i].result;
+		}
+	}
+
+	let [grid, rowSize] = rearrangeGameGrid(game, role, guessMap);
+
+	return {
+		starter: game.starter,
+		grid: grid,
+		rowSize: rowSize,
+		lastid: (guesses && guesses.length > 0 ? guesses[0]._id : null)
+	};
+};
 
 /**
  * rearrangeGameGrid
  * @param game -- the game document from the database.
  * @param role -- "M" for codemaster and "P" for player.
  * @return double array grid with assetids, colors, and if asset is covered.
- *
- * @TODO: Add covers from guesses.
  */
-const rearrangeGameGrid = (game, role) => {
-	data = {};
-	data.grid = [];
-	data.starter = game.starter;
+const rearrangeGameGrid = (game, role, guessMap) => {
+	let grid = [];
 	let [x,y] = game.size.split("x");
 	let counter = 0;
 	for(i = 0; i != y; i++) {
 		let row = [];
 		for (j = 0; j != x; j++) {
 			let record = {};
+			record.key = counter;
 
 			if (game.type === "B") {
 				record.type = counter % 2 === 1 ? "P" : "W";
 			} else {
 				record.type = game.type;
 			}
-			record.cover = "T";
+			record.cover = guessMap[counter] ? guessMap[counter] : "T";
 
 			if (role === "M") {
 				record.color = game.colorList[counter];
@@ -75,34 +93,12 @@ const rearrangeGameGrid = (game, role) => {
 			row.push(record);
 			counter++;
 		}
-		data.grid.push(row);
+		grid.push(row);
 	}
-	return data;
-}
-
-/**
- * retrieveAsset
- * @param db -- the database connection
- * @param assetid -- the asset id to retrieve
- * @return base64 encoding of picture or word from database
- * @throws if asset was not found
- */
-const retrieveAsset = async (db, assetid) => {
-	if (!assetid) {
-		throw "Asset id is required.";
-	}
-	let assetCollection = db.collection("asset");
-
-	let asset = await assetCollection
-		.findOne({_id: assetid}, {name: 0, collection: 0});
-	if (!asset) {
-		throw "Asset was not found.";
-	}
-	return asset;
-}
+	return [grid, x];
+};
 
 module.exports = {
 	retrieveGameGrid,
-	findGame,
-	retrieveAsset
+	findGame
 };

@@ -11,6 +11,7 @@
 	position: relative;
 	width: 100%;
 	height: 100%;
+	z-index: 1;
 }
 
 .col, .row {
@@ -28,4 +29,27 @@
 
 .gamelog {
 	width: 20%;
+}
+
+/** colors **/
+.assetCover {
+	width: 100%;
+	height: 100%;
+	z-index: 5;
+}
+
+.redBackground {
+	background-color: red;
+}
+
+.blueBackground {
+	background-color: blue;
+}
+
+.neutralBackground {
+	background-color: grey;
+}
+
+.assassinBackground {
+	background-color: black;
 }
