@@ -29,4 +29,4 @@ db.createCollection("asset", {
 	}
 });
 
-db.asset.createIndex([{"type" : 1}, {"name" : 1}], {unique : true});
+db.asset.createIndex({"type" : 1, "name" : 1}, {unique : true});
