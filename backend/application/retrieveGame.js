@@ -1,5 +1,3 @@
-const { stringToObjectId } = require("./connection.js");
-
 /**
  * findGame
  * @param db -- the database connection
@@ -13,12 +11,7 @@ const findGame = async (db, gameid) => {
 	}
 	let gameCollection = db.collection("game");
 
-	let objectId = stringToObjectId(gameid);
-	if (!objectId) {
-		return null;
-	}
-
-	let game = await gameCollection.distinct("_id", {"_id": objectId});
+	let game = await gameCollection.distinct("_id", {"_id": gameid});
 	return game.length > 0 ? game[0] : null;
 }
 
@@ -40,12 +33,7 @@ const retrieveGameGrid = async (db, gameid, role) => {
 	}
 	let gameCollection = db.collection("game");
 
-	let objectId = stringToObjectId(gameid);
-	if (!objectId) {
-		throw "Game was not found.";
-	}
-
-	let game = await gameCollection.findOne({_id: objectId});
+	let game = await gameCollection.findOne({_id: gameid});
 
 	if (!game) {
 		throw "Game was not found.";
@@ -105,13 +93,8 @@ const retrieveAsset = async (db, assetid) => {
 	}
 	let assetCollection = db.collection("asset");
 
-	let objectId = stringToObjectId(assetid);
-	if (!objectId) {
-		throw "Asset was not found.";
-	}
-
 	let asset = await assetCollection
-		.findOne({_id: objectId}, {name: 0, collection: 0});
+		.findOne({_id: assetid}, {name: 0, collection: 0});
 	if (!asset) {
 		throw "Asset was not found.";
 	}

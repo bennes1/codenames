@@ -1,7 +1,7 @@
 // server.js
 const express = require("express");
 const router = express.Router();
-const { mongoConnect } = require("./connection");
+const { mongoConnect, stringToObjectId } = require("./connection");
 const url = require('url');
 const createGame = require("./createGame");
 const { retrieveGameGrid, findGame, retrieveAsset } = require("./retrieveGame");
@@ -48,7 +48,7 @@ router.get("/findGame", (req, res) => {
 
 	const queryObject = url.parse(req.url,true).query;
 
-	let gameid = queryObject.gameid;
+	let gameid = stringToObjectId(queryObject.gameid);
 	let dbConnection = null;
 
 	mongoConnect()
@@ -82,7 +82,7 @@ router.get("/retrieveGameGrid", (req, res) => {
 
 	const queryObject = url.parse(req.url,true).query;
 
-	let gameid = queryObject.gameid;
+	let gameid = stringToObjectId(queryObject.gameid);
 	let role = queryObject.role;
 	let dbConnection = null;
 
@@ -117,7 +117,7 @@ router.get("/retrieveAsset", (req, res) => {
 
 	const queryObject = url.parse(req.url,true).query;
 
-	let assetid = queryObject.assetid;
+	let assetid = stringToObjectId(queryObject.assetid);
 	let type = queryObject.type;
 	let dbConnection = null;
 
