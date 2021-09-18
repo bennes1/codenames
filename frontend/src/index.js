@@ -1,6 +1,4 @@
-import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 import React from 'react';
@@ -14,9 +12,6 @@ ReactDOM.render((
       <Switch>
         <Route exact path="/" component={WelcomePage} />
         <Route exact path="/createGame" component={WelcomePage} />
-
-        // Keep the default file there for now for learning.
-        <Route exact path="/test" component={App} />
         <Route path="/*" component={GamePage} />
       </Switch>
     </BrowserRouter>
