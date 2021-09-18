@@ -39,7 +39,7 @@ class PictureAsset extends React.Component {
           if (results.status !== "000") {
           	this.setState({word: "Error..."});
           } else {
-          	this.setState({picture: results.value, word: null});
+          	this.setState({picture: results.data, word: null});
           }
         }).catch(e => {
           this.setErrorMessage("Could not connect to database.");

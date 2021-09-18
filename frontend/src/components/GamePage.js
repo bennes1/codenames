@@ -52,7 +52,7 @@ class GamePage extends React.Component {
           if (results.status !== "000") {
           	state.errorMessage = "Error occurred.";
           } else {
-          	if (!results.found || results.found != gameid) {
+          	if (!results.data || results.data != gameid) {
           		state.errorMessage = "Game was not found.";
           	}
           }

@@ -48,9 +48,9 @@ class GameGrid extends React.Component {
         	state.errorMessage = results.error.toString();
         } else {
         	state.errorMessage = '';
-        	state.grid = results.gameData.grid;
-        	state.rowSize = results.gameData.rowSize;
-        	state.lastid = results.gameData.lastid;
+        	state.grid = results.data.grid;
+        	state.rowSize = results.data.rowSize;
+        	state.lastid = results.data.lastid;
         }
         this.setState(state);
       }).catch(e => {
@@ -95,7 +95,7 @@ class GameGrid extends React.Component {
 
       	let state = {...this.state};
       	if (results.status === '000') {
-      		results.guesses.map((element, index) => {
+      		results.data.map((element, index) => {
       			if (index === 0) {
       				state.lastid = element._id;
       			}

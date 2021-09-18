@@ -9,36 +9,51 @@ const { tryGuess, getGuessesAfter } = require("./manipulateGuess");
 const { retrieveAsset } = require("./retrieveAsset");
 
 /**
- * "/initializeGame" route.  This create a new game document with pics/words
- * & color setup.  It does not start the game.
+ * runDBRequest
+ * Opens a json request.  Opens the mongo connection.  Runs the function to
+ * execute.  Closes the mongo connection.
+ * This logic was repeated multiple times in this file.
+ *
+ * @param res -- the response of the router.
+ * @param callback -- the callback to execute.  Provides the db handle.
  */
-router.post("/initializeGame", (req, res) => {
-	res.setHeader('Content-Type', 'application/json');
-
-	let size = req.body.size;
-	let type = req.body.type;
+const runDBRequest = (res, callback) => {
 	let dbConnection = null;
+	res.setHeader('Content-Type', 'application/json');
 
 	mongoConnect()
 		.catch((err) => {
 			console.error(err);
-			let json = {status: "999", error: "Connection error."};
+			const json = {status: "999", error: "Connection error."};
 			res.end(JSON.stringify(json));
 		}).then((client) => {
-			let db = client.db("codenames");
+			const db = client.db("codenames");
 			dbConnection = client;
-			return createGame(db, size, type);
-		}).then((result) => {
-			let json = {status: "000", error: "", gameid: result};
+
+			return callback(db);
+		}).then((data) => {
+			const json = {status: "000", error: "", data: data};
 			res.end(JSON.stringify(json));
 		}).catch((err) => {
 			console.error(err);
-			let json = {status: "998", error: err};
+			const json = {status: "998", error: err};
 			res.end(JSON.stringify(json));
 
 		}).finally(() => {
 			dbConnection.close();
 		});
+}
+
+/**
+ * "/initializeGame" route.  This create a new game document with pics/words
+ * & color setup.  It does not start the game.
+ */
+router.post("/initializeGame", (req, res) => {
+
+	let size = req.body.size;
+	let type = req.body.type;
+
+	runDBRequest(res, (db) => createGame(db, size, type));
 });
 
 /**
@@ -46,32 +61,11 @@ router.post("/initializeGame", (req, res) => {
  * This will return the gameid if it is found.  Otherwise, it will return empty.
  */
 router.get("/findGame", (req, res) => {
-	res.setHeader('Content-Type', 'application/json');
 
 	const queryObject = url.parse(req.url,true).query;
-
 	let gameid = stringToObjectId(queryObject.gameid);
-	let dbConnection = null;
 
-	mongoConnect()
-		.catch((err) => {
-			console.error(err);
-			let json = {status: "999", error: "Connection error."};
-			res.end(JSON.stringify(json));
-		}).then((client) => {
-			let db = client.db("codenames");
-			dbConnection = client;
-			return findGame(db, gameid);
-		}).then((result) => {
-			let json = {status: "000", error: "", found: result};
-			res.end(JSON.stringify(json));
-		}).catch((err) => {
-			console.error(err);
-			let json = {status: "998", error: err};
-			res.end(JSON.stringify(json));
-		}).finally(() => {
-			dbConnection.close();
-		});
+	runDBRequest(res, (db) => findGame(db, gameid));
 });
 
 /**
@@ -80,33 +74,12 @@ router.get("/findGame", (req, res) => {
  * dependent on the role.  For codemasters, the color information is returned.
  */
 router.get("/retrieveGameGrid", (req, res) => {
-	res.setHeader('Content-Type', 'application/json');
 
 	const queryObject = url.parse(req.url,true).query;
-
 	let gameid = stringToObjectId(queryObject.gameid);
 	let role = queryObject.role;
-	let dbConnection = null;
 
-	mongoConnect()
-		.catch((err) => {
-			console.error(err);
-			let json = {status: "999", error: "Connection error."};
-			res.end(JSON.stringify(json));
-		}).then((client) => {
-			let db = client.db("codenames");
-			dbConnection = client;
-			return retrieveGameGrid(db, gameid, role);
-		}).then((result) => {
-			let json = {status: "000", error: "", gameData: result};
-			res.end(JSON.stringify(json));
-		}).catch((err) => {
-			console.error(err);
-			let json = {status: "998", error: err};
-			res.end(JSON.stringify(json));
-		}).finally(() => {
-			dbConnection.close();
-		});
+	runDBRequest(res, (db) => retrieveGameGrid(db, gameid, role));
 });
 
 /**
@@ -115,39 +88,12 @@ router.get("/retrieveGameGrid", (req, res) => {
  * an image or it can be a word.
  */
 router.get("/retrieveAsset", (req, res) => {
-	res.setHeader('Content-Type', 'application/json');
 
 	const queryObject = url.parse(req.url,true).query;
-
 	let assetid = stringToObjectId(queryObject.assetid);
 	let type = queryObject.type;
-	let dbConnection = null;
 
-	mongoConnect()
-		.catch((err) => {
-			console.error(err);
-			let json = {status: "999", error: "Connection error."};
-			res.end(JSON.stringify(json));
-		}).then((client) => {
-			let db = client.db("codenames");
-			dbConnection = client;
-			return retrieveAsset(db, assetid);
-		}).then((result) => {
-			let json = {status: "000", error: ""};
-			if (type !== result.type) {
-				json.status = "997";
-				json.error = "Asset is wrong type.";
-			} else {
-				json.value = result.value;
-			}
-			res.end(JSON.stringify(json));
-		}).catch((err) => {
-			console.error(err);
-			let json = {status: "998", error: err};
-			res.end(JSON.stringify(json));
-		}).finally(() => {
-			dbConnection.close();
-		});
+	runDBRequest(res, (db) => retrieveAsset(db, assetid, type));
 });
 
 /**
@@ -155,34 +101,13 @@ router.get("/retrieveAsset", (req, res) => {
  * This simulates a red or blue team member touching a card.  It records the
  * guess and any turn or clue changes.
  */
-router.post("/tryGuess", async (req, res) => {
-	res.setHeader('Content-Type', 'application/json');
+router.post("/tryGuess", (req, res) => {
 
 	let gameid = stringToObjectId(req.body.gameid);
 	let position = req.body.position;
 	let team = req.body.team;
-	let dbConnection = null;
 
-	mongoConnect()
-		.catch((err) => {
-			console.error(err);
-			let json = {status: "999", error: "Connection error."};
-			res.end(JSON.stringify(json));
-		}).then((client) => {
-			let db = client.db("codenames");
-			dbConnection = client;
-			return tryGuess(db, gameid, position, team);
-		}).then((result) => {
-			let json = {status: "000", error: "", success: result};
-			res.end(JSON.stringify(json));
-		}).catch((err) => {
-			console.error(err);
-			let json = {status: "998", error: err};
-			res.end(JSON.stringify(json));
-
-		}).finally(() => {
-			dbConnection.close();
-		});
+	runDBRequest(res, (db) => tryGuess(db, gameid, position, team));
 });
 
 /**
@@ -194,55 +119,11 @@ router.get("/getMoreGuesses", async (req, res) => {
 	res.setHeader('Content-Type', 'application/json');
 
 	const queryObject = url.parse(req.url,true).query;
-
 	let gameid = stringToObjectId(queryObject.gameid);
 	let lastid = stringToObjectId(queryObject.lastid);
 	let type = queryObject.type;
-	let dbConnection = null;
 
-	mongoConnect()
-		.catch((err) => {
-			console.error(err);
-			let json = {status: "999", error: "Connection error."};
-			res.end(JSON.stringify(json));
-		}).then((client) => {
-			let db = client.db("codenames");
-			dbConnection = client;
-			return getGuessesAfter(db, gameid, lastid);
-		}).then((result) => {
-			let json = {status: "000", error: "", guesses: result};
-			res.end(JSON.stringify(json));
-		}).catch((err) => {
-			console.error(err);
-			let json = {status: "998", error: err};
-			res.end(JSON.stringify(json));
-
-		}).finally(() => {
-			dbConnection.close();
-		});
-});
-
-/**
- * "/test" route.  This tests a simple output of an image in the database.
- */
-router.get("/test", async (req, res) => {
-	let client = await mongoConnect();
-	let db = client.db("codenames");
-
-	let asset = await db
-		.collection("asset")
-		.find({name: /businessman/})
-		.next();
-
-	if (!asset) {
-		res.send("No asset found.");
-		return;
-	}
-
-	await client.close();
-
-	let image = "<img src=\"data:image/jpeg;base64," + asset.value + "\"/>";
-	res.send(image);
+	runDBRequest(res, (db) => getGuessesAfter(db, gameid, lastid));
 });
 
 module.exports = router;

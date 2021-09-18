@@ -6,7 +6,7 @@
  * @return base64 encoding of picture or word from database
  * @throws if asset was not found
  */
-const retrieveAsset = async (db, assetid) => {
+const retrieveAsset = async (db, assetid, type) => {
 	if (!assetid) {
 		throw "Asset id is required.";
 	}
@@ -17,7 +17,12 @@ const retrieveAsset = async (db, assetid) => {
 	if (!asset) {
 		throw "Asset was not found.";
 	}
-	return asset;
+
+	if (type !== asset.type) {
+		throw "Asset is wrong type.";
+	}
+
+	return asset.value;
 };
 
 /**

@@ -66,7 +66,7 @@ class CreateGameForm extends React.Component {
             this.setErrorMessage(results.error);
           } else {
             const { history } = this.props;
-            history.push("/" + results.gameid);
+            history.push("/" + results.data);
           }
         }).catch(e => {
           this.setErrorMessage("Could not connect to database.");

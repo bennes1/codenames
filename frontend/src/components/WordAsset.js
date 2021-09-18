@@ -36,7 +36,7 @@ class WordAsset extends React.Component {
           if (results.status !== "000") {
           	this.setState({word: "Error..."});
           } else {
-          	this.setState({word: results.value});
+          	this.setState({word: results.data});
           }
         }).catch(e => {
           this.setErrorMessage("Could not connect to database.");
