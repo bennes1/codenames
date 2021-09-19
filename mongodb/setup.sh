@@ -6,6 +6,9 @@ mongo+=(
     -p $MONGO_INITDB_ROOT_PASSWORD
 )
 
+f="/scripts/000-dropDatabase.js";
+"${mongo[@]}" < $f;
+
 CREATE_FILES=/scripts/*-create.js 
 for f in $CREATE_FILES; do
     echo "Running $f...";

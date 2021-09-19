@@ -7,3 +7,5 @@ alias dbshell="bash appgo.sh dbshell"
 alias dbprompt="bash appgo.sh dbprompt"
 alias webshell="bash appgo.sh webshell"
 alias runapp="bash runapp.sh"
+
+alias redb="dbshell bash /docker-entrypoint-initdb.d/setup.sh"
