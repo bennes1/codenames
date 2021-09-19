@@ -6,15 +6,18 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import WelcomePage from './components/WelcomePage';
 import GamePage from './components/GamePage';
+import ErrorBoundary from './components/ErrorBoundary';
 
 ReactDOM.render((
-    <BrowserRouter>
-      <Switch>
-        <Route exact path="/" component={WelcomePage} />
-        <Route exact path="/createGame" component={WelcomePage} />
-        <Route path="/*" component={GamePage} />
-      </Switch>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <Switch>
+          <Route exact path="/" component={WelcomePage} />
+          <Route exact path="/createGame" component={WelcomePage} />
+          <Route path="/*" component={GamePage} />
+        </Switch>
+      </BrowserRouter>
+    </ErrorBoundary>
   ),
   document.getElementById('root')
 );
