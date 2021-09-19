@@ -1,7 +1,8 @@
 #!/bin/sh
 
 # Replace environment variables in conf file.
-eval "echo \"`cat /etc/nginx/nginx.conf.template`\"" > /etc/nginx/nginx.conf
+dir=/etc/nginx/conf.d
+eval "echo \"`cat $dir/nginx.conf.template`\"" > $dir/nginx.conf
 
 # and add this at the end
 exec "$@"
