@@ -34,7 +34,7 @@ class CreateGameForm extends React.Component {
     let state = {...this.state};
     state.type = data.value;
     // Right now keep size to "official" rules but it could change later.
-    state.size = state.type == "word" ? "5x5" : "5x4";
+    state.size = state.type === "word" ? "5x5" : "5x4";
     state.errorMessage = '';
   	this.setState(state);
   }

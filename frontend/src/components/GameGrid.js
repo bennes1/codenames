@@ -102,6 +102,7 @@ class GameGrid extends React.Component {
       			const y = parseInt(element.position / state.rowSize);
       			const x = element.position % state.rowSize;
       			state.grid[y][x].cover = element.result;
+      			return null;
       		});
       	}
       	this.setState(state);

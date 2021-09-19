@@ -6,12 +6,9 @@ import Alert from 'react-bootstrap/Alert';
  * Simple error display message.  This is totally controlled by the parent.
  */
 class ErrorAlert extends React.Component {
-  constructor(props) {
-    super(props);
-  }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return nextProps.errorMessage != this.props.errorMessage;
+    return nextProps.errorMessage !== this.props.errorMessage;
   }
 
   render() {

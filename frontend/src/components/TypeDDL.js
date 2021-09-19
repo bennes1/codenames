@@ -17,7 +17,7 @@ class TypeDDL extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return nextState.value != this.state.value;
+    return nextState.value !== this.state.value;
   }
 
   handleClick(event) {

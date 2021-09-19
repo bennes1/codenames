@@ -32,7 +32,6 @@ class WordAsset extends React.Component {
       fetch(url, requestMetadata)
         .then(res => res.json())
         .then(results => {
-          let state = this.state;
           if (results.status !== "000") {
           	this.setState({word: "Error..."});
           } else {

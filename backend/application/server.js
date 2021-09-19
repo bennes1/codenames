@@ -5,7 +5,7 @@ const PORT = process.env.PORT || 4000;
 const apiRouter = require("./ApiRouter");
 
 app.use(express.json()); //Used to parse JSON bodies
-app.use(express.urlencoded()); //Parse URL-encoded bodies
+app.use(express.urlencoded({extended: true})); //Parse URL-encoded bodies
 app.use("/api", apiRouter);
 
 /**

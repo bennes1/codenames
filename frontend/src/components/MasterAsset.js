@@ -13,9 +13,6 @@ import Card from 'react-bootstrap/Card';
  * PlayerAsset, and future turn components based on the role.
  */
 class MasterAsset extends React.Component {
-	constructor(props) {
-		super(props);
-	}
 
 	getStyle() {
 		const red = "red";
