@@ -1,7 +1,7 @@
 import React from 'react';
 import GameArea from './GameArea';
 import ErrorAlert from './ErrorAlert';
-const URI = require("urijs");
+import Api from './Api';
 
 /**
  * GamePage
@@ -35,36 +35,19 @@ class GamePage extends React.Component {
 
 	  let gameid = this.props.location.pathname;
 	  gameid = gameid.split("/")[1];
-      let url = URI("/api/findGame")
-      	.query({gameid: gameid});
-
-      const requestMetadata = {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-      };
-
-      fetch(url, requestMetadata)
-        .then(res => res.json())
-        .then(results => {
-          let state = {...this.state};
-          state.dataLoaded = true;
-          state.gameid = gameid;
-          if (results.status !== "000") {
-          	state.errorMessage = "Error occurred.";
-          } else {
-          	if (!results.data || results.data !== gameid) {
-          		state.errorMessage = "Game was not found.";
-          	}
-          }
-          this.setState(state);
-        }).catch(e => {
-          let state = this.state;
-          state.dataLoaded = true;
-          state.errorMessage = "Could not connect to the database.";
-
-          this.setState(state);
-        });
-    }
+	  Api.get("findGame",
+	  	{gameid: gameid},
+	  	(data) => {
+	  		let state = {...this.state};
+	  		state.dataLoaded = true;
+	  		state.gameid = gameid;
+      	if (!data || data !== gameid) {
+      		state.errorMessage = "Game was not found.";
+      	}
+      	this.setState(state);
+	  	}
+	  );
+  }
 
 	render() {
 		if (!this.state.dataLoaded) {

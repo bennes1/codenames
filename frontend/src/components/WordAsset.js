@@ -1,6 +1,6 @@
 import React from 'react';
 import Card from 'react-bootstrap/Card';
-const URI = require("urijs");
+import Api from './Api';
 
 /**
  * WordAsset
@@ -21,26 +21,17 @@ class WordAsset extends React.Component {
 	 * When this component loads, retrieve the asset from the database.
 	 */
 	componentDidMount() {
-      let url = URI("/api/retrieveAsset")
-      	.query({assetid: this.props.assetid, type: "W"});
-
-      const requestMetadata = {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-      };
-
-      fetch(url, requestMetadata)
-        .then(res => res.json())
-        .then(results => {
-          if (results.status !== "000") {
-          	this.setState({word: "Error..."});
-          } else {
-          	this.setState({word: results.data});
-          }
-        }).catch(e => {
-          this.setErrorMessage("Could not connect to database.");
-          console.log(e);
-        });
+		Api.get("retrieveAsset", {
+				assetid: this.props.assetid,
+				type: "W"
+			},
+			(data) => {
+				this.setState({word: data});
+			},
+			(error) => {
+				this.setState({word: "Error..."});
+			}
+		);
 	}
 
 	render() {

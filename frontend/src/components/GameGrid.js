@@ -2,7 +2,8 @@ import React from 'react';
 import MasterAsset from './MasterAsset';
 import PlayerAsset from './PlayerAsset';
 import {Container, Row, Col} from 'react-bootstrap';
-const URI = require("urijs");
+import Api from './Api';
+import ErrorAlert from './ErrorAlert';
 
 /**
  * GameGrid
@@ -28,35 +29,23 @@ class GameGrid extends React.Component {
 	 */
 	componentDidMount() {
 
-    let url = URI("/api/retrieveGameGrid")
-    	.query({
-    		gameid: this.props.gameid,
-    		role: this.props.role
-    	});
-
-    const requestMetadata = {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
-    };
-
-    fetch(url, requestMetadata)
-      .then(res => res.json())
-      .then(results => {
-        let state = {...this.state};
-        state.dataLoaded = true;
-        if (results.status !== "000") {
-        	state.errorMessage = results.error.toString();
-        } else {
-        	state.errorMessage = '';
-        	state.grid = results.data.grid;
-        	state.rowSize = results.data.rowSize;
-        	state.lastid = results.data.lastid;
-        }
-        this.setState(state);
-      }).catch(e => {
-        this.setErrorMessage("Could not connect to database.");
-        console.log(e);
-      });
+		Api.get("retrieveGameGrid", {
+	    	gameid: this.props.gameid,
+	    	role: this.props.role
+			},
+			(data) => {
+				let state = {...this.state};
+				state.dataLoaded = true;
+      			state.errorMessage = '';
+      			state.grid = data.grid;
+      			state.rowSize = data.rowSize;
+      			state.lastid = data.lastid;
+      			this.setState(state);
+			},
+			(error) => {
+				this.setErrorMessage(error);
+			}
+		);
 
     // Set up timer to get more guesses
     this.timerID = setInterval(
@@ -78,37 +67,40 @@ class GameGrid extends React.Component {
    * Add to guesses as the game runs.
    */
   getMoreGuesses() {
-    let url = URI("/api/getMoreGuesses")
-    	.query({
+  	Api.get("getMoreGuesses", {
     		gameid: this.props.gameid,
     		lastid: this.state.lastid
-    	});
+			},
+			(data) => {
+				let state = {...this.state};
+    			data.map((element, index) => {
+	    			if (index === 0) {
+	    				state.lastid = element._id;
+	    			}
+	    			const y = parseInt(element.position / state.rowSize);
+	    			const x = element.position % state.rowSize;
+	    			state.grid[y][x].cover = element.result;
+	    			return null;
+	    		});
 
-    const requestMetadata = {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
-    };
+    			this.setState(state);
+			},
+			(error) => {
+				this.setErrorMessage(error);
+			}
+		);
+  }
 
-    fetch(url, requestMetadata)
-      .then(res => res.json())
-      .then(results => {
-
-      	let state = {...this.state};
-      	if (results.status === '000') {
-      		results.data.map((element, index) => {
-      			if (index === 0) {
-      				state.lastid = element._id;
-      			}
-      			const y = parseInt(element.position / state.rowSize);
-      			const x = element.position % state.rowSize;
-      			state.grid[y][x].cover = element.result;
-      			return null;
-      		});
-      	}
-      	this.setState(state);
-      }).catch(e => {
-        console.log(e);
-      });
+  /**
+   * setErrorMessage
+   * Apply changes to error message inside the "state" object for the form.
+   */
+  setErrorMessage(errorMessage) {
+  	clearInterval(this.timerID);
+    this.setState({
+    	dataLoaded: true,
+    	errorMessage: errorMessage
+    });
   }
 
   /**
@@ -120,6 +112,12 @@ class GameGrid extends React.Component {
 		if (!this.state.dataLoaded) {
 			return (
 				<h1> Loading </h1>
+			);
+		}
+
+		if (this.state.errorMessage) {
+			return (
+				<ErrorAlert errorMessage={this.state.errorMessage} />
 			);
 		}
 

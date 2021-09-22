@@ -2,6 +2,7 @@ import React from 'react';
 import PictureAsset from './PictureAsset';
 import WordAsset from './WordAsset';
 import Card from 'react-bootstrap/Card';
+import Api from './Api';
 
 /**
  * PlayerAsset
@@ -25,30 +26,13 @@ class PlayerAsset extends React.Component {
 	 * On click, see if the guess works for the game.
 	 */
 	handleClick(event) {
-      let url = "/api/tryGuess";
-      let params = {
-      	gameid: this.props.gameid,
-      	team: this.props.team,
-      	position: this.props.index
-      };
-
-      const requestMetadata = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(params)
-      };
-
-      fetch(url, requestMetadata)
-        .then(res => res.json())
-        .then(results => {
-          if (results.status !== "000") {
-          	console.error(results.error.toString());
-          }
-        }).catch(e => {
-          console.error("Could not connect to database.");
-          console.error(e);
-        });
-  	}
+		Api.post("tryGuess", {
+      			gameid: this.props.gameid,
+      			team: this.props.team,
+      			position: this.props.index
+			}
+		);
+  }
 
   /**
    * getBackgroundClasses

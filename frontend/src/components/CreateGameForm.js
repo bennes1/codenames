@@ -4,7 +4,7 @@ import {Container, Row, Col} from 'react-bootstrap';
 import { withRouter } from "react-router";
 import ErrorAlert from './ErrorAlert';
 import '../css/form.css';
-
+import Api from './Api';
 
 /**
  * CreateGameForm
@@ -52,27 +52,19 @@ class CreateGameForm extends React.Component {
     if (errorMessage) {
       this.setErrorMessage(errorMessage);
     } else {
-      const url = "/api/initializeGame";
-      const requestMetadata = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(this.state)
-      };
-
-      fetch(url, requestMetadata)
-        .then(res => res.json())
-        .then(results => {
-          if (results.status !== "000") {
-            this.setErrorMessage(results.error);
-          } else {
-            const { history } = this.props;
-            history.push("/" + results.data);
-          }
-        }).catch(e => {
-          this.setErrorMessage("Could not connect to database.");
-          console.log(e);
-        });
-      }
+      Api.post("initializeGame", {
+          type: this.state.type,
+          size: this.state.size
+        },
+        (data) => {
+          const { history } = this.props;
+          history.push("/" + data);
+        },
+        (error) => {
+          this.setErrorMessage(error);
+        }
+      );
+    }
   }
 
   /**

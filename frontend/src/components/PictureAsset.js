@@ -1,6 +1,6 @@
 import React from 'react';
 import Card from 'react-bootstrap/Card';
-const URI = require("urijs");
+import Api from './Api';
 
 /**
  * PictureAsset
@@ -24,26 +24,17 @@ class PictureAsset extends React.Component {
 	 * show up as base64 encoding.
 	 */
 	componentDidMount() {
-      let url = URI("/api/retrieveAsset")
-      	.query({assetid: this.props.assetid, type: "P"});
-
-      const requestMetadata = {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-      };
-
-      fetch(url, requestMetadata)
-        .then(res => res.json())
-        .then(results => {
-          if (results.status !== "000") {
-          	this.setState({word: "Error..."});
-          } else {
-          	this.setState({picture: results.data, word: null});
-          }
-        }).catch(e => {
-          this.setErrorMessage("Could not connect to database.");
-          console.log(e);
-        });
+		Api.get("retrieveAsset", {
+				assetid: this.props.assetid,
+				type: "P"
+			},
+			(data) => {
+				this.setState({picture: data, word: null});
+			},
+			(error) => {
+				this.setState({word: "Error..."});
+			}
+		);
 	}
 
 	render() {
