@@ -1,4 +1,5 @@
 const { getGuessesAfter } = require('./manipulateGuess');
+const { stringToObjectId } = require('./connection');
 
 /**
  * findGame
@@ -54,12 +55,16 @@ const retrieveGameGrid = async (db, gameid, role) => {
 	}
 
 	let [grid, rowSize] = rearrangeGameGrid(game, role, guessMap);
+	lastid = (guesses && guesses.length > 0 ? guesses[0]._id : null);
+	if (!lastid) {
+		lastid = stringToObjectId();
+	}
 
 	return {
 		starter: game.starter,
 		grid: grid,
 		rowSize: rowSize,
-		lastid: (guesses && guesses.length > 0 ? guesses[0]._id : null)
+		lastid: lastid
 	};
 };
 

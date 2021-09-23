@@ -26,3 +26,5 @@ db.createCollection("guess", {
 		}
 	}
 });
+
+db.guess.createIndex({"gameid": 1});

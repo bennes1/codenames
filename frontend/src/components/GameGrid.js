@@ -36,11 +36,11 @@ class GameGrid extends React.Component {
 			(data) => {
 				let state = {...this.state};
 				state.dataLoaded = true;
-      			state.errorMessage = '';
-      			state.grid = data.grid;
-      			state.rowSize = data.rowSize;
-      			state.lastid = data.lastid;
-      			this.setState(state);
+      	state.errorMessage = '';
+      	state.grid = data.grid;
+      	state.rowSize = data.rowSize;
+      	state.lastid = data.lastid;
+      	this.setState(state);
 			},
 			(error) => {
 				this.setErrorMessage(error);
