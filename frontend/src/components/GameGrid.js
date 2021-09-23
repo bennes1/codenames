@@ -3,7 +3,7 @@ import MasterAsset from './MasterAsset';
 import PlayerAsset from './PlayerAsset';
 import {Container, Row, Col} from 'react-bootstrap';
 import Api from './Api';
-import ErrorAlert from './ErrorAlert';
+import Loading from './Loading';
 
 /**
  * GameGrid
@@ -109,59 +109,53 @@ class GameGrid extends React.Component {
    * otherwise use PlayerAssets.
    */
 	render() {
-		if (!this.state.dataLoaded) {
-			return (
-				<h1> Loading </h1>
-			);
-		}
-
-		if (this.state.errorMessage) {
-			return (
-				<ErrorAlert errorMessage={this.state.errorMessage} />
-			);
-		}
 
 		return (
-			<div className="gamegrid">
-				<Container>
-					{this.state.grid.map((items, yindex) => {
-						return (
-							<Row key={yindex}>
-								{items.map((element, xindex) => {
-									if (this.props.role === "M") {
-										return (
-											<Col key={element.key}>
-												<MasterAsset
-													cover={element.cover}
-													color={element.color}
-													type={element.type}
-													assetid={element.assetid}
-													index={element.key}
-													gameid={this.props.gameid}
-												/>
-											</Col>
-										)
-									} else {
-										return (
-											<Col key={element.key}>
-												<PlayerAsset
-													cover={element.cover}
-													type={element.type}
-													assetid={element.assetid}
-													team={this.props.team}
-													index={element.key}
-													gameid={this.props.gameid}
-												/>
-											</Col>
-										)
-									}
+			<Loading
+				errorMessage={this.state.errorMessage}
+				dataLoaded={this.state.dataLoaded}
+			>
+				<div className="gamegrid">
+					<Container>
+						{this.state.grid.map((items, yindex) => {
+							return (
+								<Row key={yindex}>
+									{items.map((element, xindex) => {
+										if (this.props.role === "M") {
+											return (
+												<Col key={element.key}>
+													<MasterAsset
+														cover={element.cover}
+														color={element.color}
+														type={element.type}
+														assetid={element.assetid}
+														index={element.key}
+														gameid={this.props.gameid}
+													/>
+												</Col>
+											)
+										} else {
+											return (
+												<Col key={element.key}>
+													<PlayerAsset
+														cover={element.cover}
+														type={element.type}
+														assetid={element.assetid}
+														team={this.props.team}
+														index={element.key}
+														gameid={this.props.gameid}
+													/>
+												</Col>
+											)
+										}
 
-								})}
-							</Row>
-						)
-					})}
-				</Container>
-			</div>
+									})}
+								</Row>
+							)
+						})}
+					</Container>
+				</div>
+			</Loading>
 		)
 	}
 }

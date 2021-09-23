@@ -1,6 +1,6 @@
 import React from 'react';
 import GameArea from './GameArea';
-import ErrorAlert from './ErrorAlert';
+import Loading from './Loading';
 import Api from './Api';
 
 /**
@@ -50,23 +50,18 @@ class GamePage extends React.Component {
   }
 
 	render() {
-		if (!this.state.dataLoaded) {
-			return (
-				<h1> Loading </h1>
-			);
-		}
-		if (this.state.errorMessage) {
-			return (
-				<ErrorAlert errorMessage={this.state.errorMessage} />
-			);
-		}
 
 		return (
-			<GameArea
-				gameid={this.state.gameid}
-				team={this.state.team}
-				role={this.state.role}
-			/>
+			<Loading
+				errorMessage={this.state.errorMessage}
+				dataLoaded={this.state.dataLoaded}
+			>
+					<GameArea
+						gameid={this.state.gameid}
+						team={this.state.team}
+						role={this.state.role}
+					/>
+			</Loading>
 		);
 	}
 }
