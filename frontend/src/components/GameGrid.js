@@ -2,7 +2,7 @@ import React from 'react';
 import MasterAsset from './MasterAsset';
 import PlayerAsset from './PlayerAsset';
 import {Container, Row, Col} from 'react-bootstrap';
-import Api from './Api';
+import api from '../includes/api';
 import Loading from './Loading';
 
 /**
@@ -29,7 +29,7 @@ class GameGrid extends React.Component {
 	 */
 	componentDidMount() {
 
-		Api.get("retrieveGameGrid", {
+		api.get("retrieveGameGrid", {
 	    	gameid: this.props.gameid,
 	    	role: this.props.role
 			},
@@ -67,23 +67,23 @@ class GameGrid extends React.Component {
    * Add to guesses as the game runs.
    */
   getMoreGuesses() {
-  	Api.get("getMoreGuesses", {
+  	api.get("getMoreGuesses", {
     		gameid: this.props.gameid,
     		lastid: this.state.lastid
 			},
 			(data) => {
 				let state = {...this.state};
-    			data.map((element, index) => {
-	    			if (index === 0) {
-	    				state.lastid = element._id;
-	    			}
-	    			const y = parseInt(element.position / state.rowSize);
-	    			const x = element.position % state.rowSize;
-	    			state.grid[y][x].cover = element.result;
-	    			return null;
-	    		});
+  			data.map((element, index) => {
+    			if (index === 0) {
+    				state.lastid = element._id;
+    			}
+    			const y = parseInt(element.position / state.rowSize);
+    			const x = element.position % state.rowSize;
+    			state.grid[y][x].cover = element.result;
+    			return null;
+    		});
 
-    			this.setState(state);
+    		this.setState(state);
 			},
 			(error) => {
 				this.setErrorMessage(error);

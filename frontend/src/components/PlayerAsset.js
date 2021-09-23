@@ -2,7 +2,7 @@ import React from 'react';
 import PictureAsset from './PictureAsset';
 import WordAsset from './WordAsset';
 import Card from 'react-bootstrap/Card';
-import Api from './Api';
+import api from '../includes/api';
 
 /**
  * PlayerAsset
@@ -26,7 +26,7 @@ class PlayerAsset extends React.Component {
 	 * On click, see if the guess works for the game.
 	 */
 	handleClick(event) {
-		Api.post("tryGuess", {
+		api.post("tryGuess", {
       			gameid: this.props.gameid,
       			team: this.props.team,
       			position: this.props.index

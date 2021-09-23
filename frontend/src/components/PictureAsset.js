@@ -1,6 +1,6 @@
 import React from 'react';
 import Card from 'react-bootstrap/Card';
-import Api from './Api';
+import api from '../includes/api';
 
 /**
  * PictureAsset
@@ -24,7 +24,7 @@ class PictureAsset extends React.Component {
 	 * show up as base64 encoding.
 	 */
 	componentDidMount() {
-		Api.get("retrieveAsset", {
+		api.get("retrieveAsset", {
 				assetid: this.props.assetid,
 				type: "P"
 			},

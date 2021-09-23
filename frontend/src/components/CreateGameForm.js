@@ -4,7 +4,7 @@ import {Container, Row, Col} from 'react-bootstrap';
 import { withRouter } from "react-router";
 import ErrorAlert from './ErrorAlert';
 import '../css/form.css';
-import Api from './Api';
+import api from '../includes/api';
 
 /**
  * CreateGameForm
@@ -52,7 +52,7 @@ class CreateGameForm extends React.Component {
     if (errorMessage) {
       this.setErrorMessage(errorMessage);
     } else {
-      Api.post("initializeGame", {
+      api.post("initializeGame", {
           type: this.state.type,
           size: this.state.size
         },

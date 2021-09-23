@@ -1,6 +1,6 @@
 import React from 'react';
 import Card from 'react-bootstrap/Card';
-import Api from './Api';
+import api from '../includes/api';
 
 /**
  * WordAsset
@@ -21,7 +21,7 @@ class WordAsset extends React.Component {
 	 * When this component loads, retrieve the asset from the database.
 	 */
 	componentDidMount() {
-		Api.get("retrieveAsset", {
+		api.get("retrieveAsset", {
 				assetid: this.props.assetid,
 				type: "W"
 			},

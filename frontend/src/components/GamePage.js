@@ -1,7 +1,7 @@
 import React from 'react';
 import GameArea from './GameArea';
 import Loading from './Loading';
-import Api from './Api';
+import api from '../includes/api';
 
 /**
  * GamePage
@@ -35,7 +35,7 @@ class GamePage extends React.Component {
 
 	  let gameid = this.props.location.pathname;
 	  gameid = gameid.split("/")[1];
-	  Api.get("findGame",
+	  api.get("findGame",
 	  	{gameid: gameid},
 	  	(data) => {
 	  		let state = {...this.state};
