@@ -1,0 +1,36 @@
+.redBackground {
+	background-color: red;
+}
+
+.blueBackground {
+	background-color: blue;
+}
+
+.neutralBackground {
+	background-color: grey;
+}
+
+.assassinBackground {
+	background-color: black;
+}
+
+.redBorder {
+	border-color: red;
+}
+
+.blueBorder {
+	border-color: blue;
+}
+
+.neutralBorder {
+	border-color:  grey;
+}
+
+.assassinBorder {
+	border-color: black;
+}
+
+.redBorder, .blueBorder, .neutralBorder, .assassinBorder {
+	border-width: 3px;
+	border-top-width: 5px;
+}

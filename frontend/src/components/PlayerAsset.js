@@ -3,6 +3,7 @@ import PictureAsset from './PictureAsset';
 import WordAsset from './WordAsset';
 import Card from 'react-bootstrap/Card';
 import api from '../includes/api';
+import { returnColorBackground } from '../includes/color';
 
 /**
  * PlayerAsset
@@ -12,8 +13,6 @@ import api from '../includes/api';
  *
  * @TODO: Click event has no effect if it is not their turn.  (Perhaps, popup
  * message in this case.)
- * @TODO: Need to take out colors here.  They will be in use for MasterAsset,
- * PlayerAsset, and future turn components based on the role.
  */
 class PlayerAsset extends React.Component {
 	constructor(props) {
@@ -39,26 +38,7 @@ class PlayerAsset extends React.Component {
    * translates the cover prop into the actual class used to cover the asset.
    */
 	getBackgroundClasses() {
-		let classes = "assetCover ";
-
-		switch(this.props.cover) {
-			case "R":
-				classes += "redBackground";
-				break;
-			case "B":
-				classes += "blueBackground";
-				break;
-			case "W":
-				classes += "neutralBackground";
-				break;
-			case "A":
-				classes += "assassinBackground";
-				break;
-			case "T":
-			default:
-				classes = "";
-				break;
-		}
+		let classes = "assetCover " + returnColorBackground(this.props.cover);
 		return classes;
 	}
 
