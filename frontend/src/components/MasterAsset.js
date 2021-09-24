@@ -23,9 +23,9 @@ class MasterAsset extends React.Component {
 	}
 
 	/**
-     * getBackgroundClasses
-     * translates the cover prop into the actual class used to cover the asset.
-     */
+   * getBackgroundClasses
+   * translates the cover prop into the actual class used to cover the asset.
+   */
 	getBackgroundClasses() {
 		let classes = "assetCover " + returnColorBackground(this.props.cover);
 		return classes;

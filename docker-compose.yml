@@ -1,52 +1,52 @@
 version: "3.3"
 services:
-        frontend:
-                build:
-                        context: ./frontend/.
-                        dockerfile: Dockerfile.dev
-                ports:
-                        - '${FRONTEND_PORT}:${FRONTEND_PORT}'
-                environment:
-                        - CHOKIDAR_USEPOLLING=true
-                        - PORT=${FRONTEND_PORT}
-                        - WDS_SOCKET_PORT=${FRONTEND_PORT}
-                        - DOLLAR_SIGN=${DOLLAR_SIGN}
-                        - FAST_REFRESH=false
-                volumes:
-                        - 'frontmodules:/app/node_modules'
-        backend:
-                build: ./backend/.
-                ports:
-                        - '${BACKEND_PORT}:${BACKEND_PORT}'
-                environment:
-                        - PORT=${BACKEND_PORT}
-                        - WDS_SOCKET_PORT=${BACKEND_PORT}
-                command: npm run-script dev
-                volumes:
-                        - 'backmodules:/usr/src/app/node_modules'
-        revproxy:
-                build: ./nginx/.
-                ports:
-                        - '${NGINX_PORT}:${NGINX_PORT}'
-                environment:
-                        - PORT=${NGINX_PORT}
-                        - WDS_SOCKET_PORT=${NGINX_PORT}
-                        - FRONTEND_PORT=${FRONTEND_PORT}
-                        - BACKEND_PORT=${BACKEND_PORT}
-                        - DOLLAR_SIGN=${DOLLAR_SIGN}
-                restart: always
-        mong:
-                build: ./mongodb/.
-                hostname: mong
-                container_name: mong
-                restart: unless-stopped
-                ports:
-                        - '27017:27017'
-                environment:
-                        - MONGO_INITDB_ROOT_USERNAME=admin
-                        - MONGO_INITDB_ROOT_PASSWORD=pass
-                entrypoint: /usr/local/bin/docker-entrypoint.sh
-                command: "--auth"
+  frontend:
+    build:
+      context: ./frontend/.
+      dockerfile: Dockerfile.dev
+    ports:
+      - '${FRONTEND_PORT}:${FRONTEND_PORT}'
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - PORT=${FRONTEND_PORT}
+      - WDS_SOCKET_PORT=${FRONTEND_PORT}
+      - DOLLAR_SIGN=${DOLLAR_SIGN}
+      - FAST_REFRESH=false
+    volumes:
+      - 'frontmodules:/app/node_modules'
+  backend:
+    build: ./backend/.
+    ports:
+      - '${BACKEND_PORT}:${BACKEND_PORT}'
+    environment:
+      - PORT=${BACKEND_PORT}
+      - WDS_SOCKET_PORT=${BACKEND_PORT}
+    command: npm run-script dev
+    volumes:
+      - 'backmodules:/usr/src/app/node_modules'
+  revproxy:
+    build: ./nginx/.
+    ports:
+      - '${NGINX_PORT}:${NGINX_PORT}'
+    environment:
+      - PORT=${NGINX_PORT}
+      - WDS_SOCKET_PORT=${NGINX_PORT}
+      - FRONTEND_PORT=${FRONTEND_PORT}
+      - BACKEND_PORT=${BACKEND_PORT}
+      - DOLLAR_SIGN=${DOLLAR_SIGN}
+    restart: always
+  mong:
+    build: ./mongodb/.
+    hostname: mong
+    container_name: mong
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=pass
+    entrypoint: /usr/local/bin/docker-entrypoint.sh
+    command: "--auth"
 volumes:
-        frontmodules:
-        backmodules:
+  frontmodules:
+  backmodules:

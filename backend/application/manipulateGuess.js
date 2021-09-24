@@ -58,10 +58,10 @@ const getGuessesAfter = async(db, gameid, lastid = null) => {
 	}
 
 	let guesses = await guessCollection
-						.find()
-						.filter(filter)
-						.sort({_id: -1})
-						.toArray();
+		.find()
+		.filter(filter)
+		.sort({_id: -1})
+		.toArray();
 	return guesses;
 }
 

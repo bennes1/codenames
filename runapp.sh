@@ -7,20 +7,20 @@ build=
 while getopts ":pb" flag
 do
 	case "${flag}" in
-    	p )
-			file2="docker-compose.prod.yml"
-			;;
-    	b )
-			build="true"
-			;;
-		\? )
-			echo "Invalid Option: -$OPTARG" 1>&2
-			exit 1
-			;;
-		: )
-			echo "Invalid Option: -$OPTARG requires an argument" 1>&2
-			exit 1
-			;;
+  	p )
+		  file2="docker-compose.prod.yml"
+		  ;;
+  	b )
+		build="true"
+		  ;;
+	  \? )
+		  echo "Invalid Option: -$OPTARG" 1>&2
+		  exit 1
+		  ;;
+	  : )
+		  echo "Invalid Option: -$OPTARG requires an argument" 1>&2
+		  exit 1
+		;;
 	esac
 done
 

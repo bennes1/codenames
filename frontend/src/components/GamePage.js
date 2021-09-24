@@ -56,15 +56,14 @@ class GamePage extends React.Component {
 				errorMessage={this.state.errorMessage}
 				dataLoaded={this.state.dataLoaded}
 			>
-					<GameArea
-						gameid={this.state.gameid}
-						team={this.state.team}
-						role={this.state.role}
-					/>
+				<GameArea
+					gameid={this.state.gameid}
+					team={this.state.team}
+					role={this.state.role}
+				/>
 			</Loading>
 		);
 	}
 }
 
 export default GamePage;
-
