@@ -7,6 +7,7 @@ const createGame = require("./createGame");
 const { retrieveGameGrid, findGame } = require("./retrieveGame");
 const { tryGuess, getGuessesAfter } = require("./manipulateGuess");
 const { retrieveAsset } = require("./retrieveAsset");
+const { upsertRole } = require("./modifyRole");
 
 /**
  * runDBRequest
@@ -116,6 +117,26 @@ router.post("/tryGuess", (req, res) => {
 	let team = req.body.team;
 
 	runDBRequest(res, (db) => tryGuess(db, gameid, position, team));
+});
+
+/**
+ * upsertRole
+ * Creates or updates the role of the user.  (Depends on if the roleid is null.)
+ */
+router.post("/upsertRole", (req, res) => {
+
+  const gameid = stringToObjectId(req.body.gameid);
+
+  // roleid comes in as null or an objectid.
+  let roleid = req.body.roleid;
+  if (roleid) {
+    roleid = stringToObjectId(roleid);
+  }
+
+  const team = req.body.team;
+  const role = req.body.role;
+
+  runDBRequest(res, (db) => upsertRole(db, gameid, roleid, team, role));
 });
 
 /**
