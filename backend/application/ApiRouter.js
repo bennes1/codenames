@@ -36,7 +36,15 @@ const runDBRequest = (res, callback) => {
 			res.end(JSON.stringify(json));
 		}).catch((err) => {
 			console.error(err);
-			const json = {status: "998", error: err};
+      let json = {};
+      if (typeof err === "string") {
+        // User defined
+        json.status = "998";
+        json.error = err;
+      } else {
+        json.status = "997";
+        json.error = "Error from the database.  Probably Syntax.";
+      }
 			res.end(JSON.stringify(json));
 
 		}).finally(() => {
