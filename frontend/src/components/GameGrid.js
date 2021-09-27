@@ -15,7 +15,7 @@ class GameGrid extends React.Component {
   }
 
   renderElement(element, index) {
-    if (this.props.role === "M") {
+    if (["RM", "BM"].indexOf(this.props.role) !== -1) {
       return (
         <Col key={index}>
           <MasterAsset
@@ -34,7 +34,7 @@ class GameGrid extends React.Component {
             cover={element.cover}
             type={element.type}
             asset={element.asset}
-            team={this.props.team}
+            role={this.props.role}
             index={index}
             gameid={this.props.gameid}
           />

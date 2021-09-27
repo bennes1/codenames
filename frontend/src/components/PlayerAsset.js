@@ -26,9 +26,9 @@ class PlayerAsset extends React.Component {
 	 */
 	handleClick(event) {
 		api.post("tryGuess", {
-      			gameid: this.props.gameid,
-      			team: this.props.team,
-      			position: this.props.index
+  			gameid: this.props.gameid,
+  			role: this.props.role,
+  			position: this.props.index
 			}
 		);
   }

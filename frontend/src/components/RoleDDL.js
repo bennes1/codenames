@@ -14,7 +14,6 @@ class RoleDDL extends React.Component {
     super(props);
     this.state = {
       text: 'Please select a role',
-      team: null,
       role: null,
       roleid: null,
       errorMessage: null
@@ -36,30 +35,24 @@ class RoleDDL extends React.Component {
     state.text = event.target.text;
     switch(state.text) {
       case "Red Codemaster":
-        state.team = "R";
-        state.role = "M";
+        state.role = "RM";
         break;
       case "Blue Codemaster":
-        state.team = "B";
-        state.role = "M";
+        state.role = "BM";
         break;
       case "Red Player":
-        state.team = "R";
-        state.role = "P";
+        state.role = "RP";
         break;
       case "Blue Player":
-        state.team = "B";
-        state.role = "P";
+        state.role = "BP";
         break;
       default:
         state.text = "";
-        state.team = null;
         state.role = null;
         break;
     }
     if (this.text !== state.text) {
       api.post("upsertRole", {
-          team: state.team,
           role: state.role,
           roleid: state.roleid,
           gameid: this.props.gameid

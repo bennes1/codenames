@@ -66,6 +66,10 @@ class GameArea extends React.Component {
     );
   }
 
+  componentWillUnmount() {
+    clearInterval(this.timerID);
+  }
+
   getChanges() {
     api.get("retrieveGameChanges", {
         gameid: this.props.gameid,

@@ -19,7 +19,8 @@ const {
 } = require("./retrieveGame");
 const {
   tryGuess,
-  upsertRole
+  upsertRole,
+  startGame
 } = require("./modifyGame");
 
 /**
@@ -51,8 +52,8 @@ const runDBRequest = (res, callback) => {
 		}).catch((err) => {
 			console.error(err);
       let json = {};
-      if (typeof err === "string") {
-        // User defined
+      if (typeof err === "string" || err instanceof Array) {
+        // I threw
         json.status = "998";
         json.error = err;
       } else {
@@ -100,21 +101,28 @@ router.get("/retrieveGameInitial", (req, res) => {
 	const queryObject = url.parse(req.url,true).query;
 	const gameid = stringToObjectId(queryObject.gameid);
 	const role = queryObject.role;
-  const team = queryObject.team;
 
-	runDBRequest(res, (db) => retrieveGameInitial(db, gameid, role, team));
+	runDBRequest(res, (db) => retrieveGameInitial(db, gameid, role));
 });
 
+/**
+ * retrieveGameChanges
+ * This will return the game changes and is meant to run repeatedly.
+ */
 router.get("/retrieveGameChanges", (req, res) => {
 
   const queryObject = url.parse(req.url,true).query;
   const gameid = stringToObjectId(queryObject.gameid);
   const role = queryObject.role;
-  const team = queryObject.team;
 
-  runDBRequest(res, (db) => retrieveGameChanges(db, gameid, role, team));
+  runDBRequest(res, (db) => retrieveGameChanges(db, gameid, role));
 });
 
+/**
+ * retrieveGameAssets
+ * This will return the assets in the grid only.  I separate it out because it
+ * is a lot more data than the rest of the game.
+ */
 router.get("/retrieveGameAssets", (req, res) => {
 
   const queryObject = url.parse(req.url,true).query;
@@ -132,9 +140,9 @@ router.post("/tryGuess", (req, res) => {
 
 	let gameid = stringToObjectId(req.body.gameid);
 	let position = req.body.position;
-	let team = req.body.team;
+	let role = req.body.role;
 
-	runDBRequest(res, (db) => tryGuess(db, gameid, position, team));
+	runDBRequest(res, (db) => tryGuess(db, gameid, position, role));
 });
 
 /**
@@ -150,11 +158,18 @@ router.post("/upsertRole", (req, res) => {
   if (roleid) {
     roleid = stringToObjectId(roleid);
   }
-
-  const team = req.body.team;
   const role = req.body.role;
 
-  runDBRequest(res, (db) => upsertRole(db, gameid, roleid, team, role));
+  runDBRequest(res, (db) => upsertRole(db, gameid, roleid, role));
+});
+
+/**
+ * startGame
+ * Checks to see if the necessary roles are there and then it sets the start.
+ */
+router.post("/startGame", (req, res) => {
+  const gameid = stringToObjectId(req.body.gameid);
+  runDBRequest(res, (db) => startGame(db, gameid));
 });
 
 module.exports = router;

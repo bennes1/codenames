@@ -43,7 +43,9 @@ async function createGame(db, size, type) {
 	// Create colors
 	results = setupGridColors(size);
 	const colorList = results[1];
-	doc.starter = results[0];
+
+  // (R)ed or (B)lue based on the setup.  Start with code(M)aster.
+	doc.turn = "" + results[0] + "M";
 
   doc.grid = rearrangeGameGrid(amount, type, colorList);
   doc.roles = [];

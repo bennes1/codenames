@@ -12,20 +12,19 @@ import api from '../includes/api';
  * This is for selecting the game role and then starting the game.
  *
  * @TODO: expand the waiting area
- * @TODO: start game
  */
 class RoleArea extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			team: null,
-			role: null,
+      role: null,
       started: this.props.started,
       roleErrorMessage: [],
       windowErrorMessage: []
 		};
 
     this.handleRoleChange = this.handleRoleChange.bind(this);
+    this.handleStart = this.handleStart.bind(this);
 	}
 
   /**
@@ -35,7 +34,6 @@ class RoleArea extends React.Component {
    */
   handleRoleChange(data) {
     let state = {...this.state};
-    state.team = data.team;
     state.role = data.role;
     if (data.errorMessage) {
       state.roleErrorMessage = ["Could not update role"];
@@ -44,11 +42,36 @@ class RoleArea extends React.Component {
     }
 
     // If all are set, then show the game!
-    if (state.started && state.team && state.role){
+    if (state.started && state.role){
       this.props.parentCallback(state);
     } else {
       this.setState(state);
     }
+  }
+
+  /**
+   * handleStart
+   * When the start button is clicked, verify roles and then start the game.
+   */
+  handleStart() {
+    api.post("startGame",
+      {gameid: this.props.gameid},
+      (data) => {
+        let state = {...this.state};
+        state.started = data;
+        // If all are set, then show the game!
+        if (state.started && state.role){
+          this.props.parentCallback(state);
+        } else {
+          this.setState(state);
+        }
+      },
+      (error) => {
+        let state = {...this.state};
+        state.windowErrorMessage = error;
+        this.setState(state);
+      }
+    );
   }
 
 	render() {
@@ -56,7 +79,7 @@ class RoleArea extends React.Component {
       this.state.roleErrorMessage,
       this.state.windowErrorMessage
     );
-		if (!this.state.team || !this.state.role || !this.state.started) {
+		if (!this.state.role || !this.state.started) {
 			return (
 				<Container>
           {errorMessage.length > 0 &&
@@ -83,7 +106,7 @@ class RoleArea extends React.Component {
           </Row>
           <Row>
             <Col>
-              <button type="submit" className="btn btn-primary">
+              <button className="btn btn-primary" onClick={this.handleStart}>
                   Start Game
               </button>
             </Col>

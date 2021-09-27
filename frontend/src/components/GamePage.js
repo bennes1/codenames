@@ -18,9 +18,8 @@ class GamePage extends React.Component {
 			dataLoaded: false,
 			errorMessage: '',
 			gameid: null,
-			team: null,
-			role: null,
-      started: false
+      role: null,
+      started: null
 		};
 		this.setRole = this.setRole.bind(this);
 	}
@@ -55,8 +54,7 @@ class GamePage extends React.Component {
    */
   setRole(data) {
   	let state = {...this.state};
-  	state.role = data.role;
-  	state.team = data.team;
+    state.role = data.role;
     state.started = data.started
   	this.setState(state);
   }
@@ -69,7 +67,7 @@ class GamePage extends React.Component {
 				errorMessage={this.state.errorMessage}
 				dataLoaded={this.state.dataLoaded}
 			>
-			{!this.state.started || !this.state.role || !this.state.team ?
+			{!this.state.role || !this.state.started ?
 				<RoleArea
 					gameid={this.state.gameid}
           started={this.state.started}
@@ -77,7 +75,6 @@ class GamePage extends React.Component {
 				/> :
 				<GameArea
 					gameid={this.state.gameid}
-					team={this.state.team}
 					role={this.state.role}
 				/>}
 			</Loading>

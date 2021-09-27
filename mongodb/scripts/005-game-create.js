@@ -67,10 +67,6 @@ db.createCollection("game", {
             description: "Data of a picture or a word."
           }
 				},
-				starter: {
-					enum: ["B", "R"],
-					description: "This is which team starts the game."
-				},
         roles: {
           bsonType: "array",
           description: "Single array of users in game.",
@@ -84,10 +80,14 @@ db.createCollection("game", {
               },
               role: {
                 enum: ["RM", "RP", "BM", "BP"],
-                description: "Red or blue, codemaster or player"
+                description: "Red or blue, codemaster or player."
               }
             }
           }
+        },
+        turn: {
+          enum: ["RM", "RP", "BM", "BP"],
+          description: "Whose turn it is."
         }
 			}
 		}

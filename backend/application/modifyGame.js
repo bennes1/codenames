@@ -1,20 +1,27 @@
 const { stringToObjectId } = require("./connection");
+const { retrieveGame } = require("./retrieveGame");
+const { getRoleMessages } = require("./verifyGame");
 
 /**
  * tryGuess
  * @param db -- the database connection
  * @param gameid -- the game id (object id)
  * @param position -- the position in the grid
- * @param team -- the team (red|blue).  If the guess is not the right color,
- * turn ends.
+ * @param role -- roles of (r)ed or (b)lue code(m)asters or (p)layers.
  * @return true|false -- true if still same turn.
  *
  * @TODO: Change turn if last guess or wrong result.
  */
-const tryGuess = async(db, gameid, position, team) => {
+const tryGuess = async(db, gameid, position, role) => {
 
-  if (["R", "B"].indexOf(team) === -1) {
-    throw "Team needs to be red or blue.";
+  if (["RP", "BP"].indexOf(role) === -1) {
+    throw "You cannot guess.";
+  }
+
+  const game = await retrieveGame(db, gameid, {turn: 1});
+
+  if (game.turn !== role) {
+    throw "It is not your turn.";
   }
 
   let gameCollection = db.collection("game");
@@ -49,7 +56,7 @@ const tryGuess = async(db, gameid, position, team) => {
     updateObj
   );
 
-  let success = updateRec.modifiedCount && team === colorResult;
+  let success = updateRec.modifiedCount && role === colorResult + "P";
   return success;
 }
 
@@ -60,18 +67,16 @@ const tryGuess = async(db, gameid, position, team) => {
  * @param db -- the database connection
  * @param gameid -- the game id of the game (objectId)
  * @param roleid -- the role id (objectId).  If null, inserts instead.
- * @param team -- the team to add role ((R)ed or (B)lue)
- * @param role -- the type to add role (Code (M)aster or (P)layer)
+ * @param role -- roles of (r)ed or (b)lue code(m)asters or (p)layers.
  *
  * @return the id of the role inserted or updated.
+ *
+ * @TODO: remove objectid and use index of array as key?
  */
-const upsertRole = async(db, gameid, roleid, team, role) => {
+const upsertRole = async(db, gameid, roleid, role) => {
 
-  if (["R", "B"].indexOf(team) === -1) {
-    throw "Team needs to be red or blue.";
-  }
-  if (["M", "P"].indexOf(role) === -1) {
-    throw "Role needs to be master or player.";
+  if (["RM", "RP", "BM", "BP"].indexOf(role) === -1) {
+    throw "Red or blue, master or player.";
   }
   if (!gameid) {
     throw "Gameid needs to be defined.";
@@ -83,13 +88,13 @@ const upsertRole = async(db, gameid, roleid, team, role) => {
     // Add to array
     roleid = stringToObjectId();
     updateObj.key = roleid;
-    updateObj.role = "" + team + role;
+    updateObj.role = role;
     updateObj = {roles: updateObj};
     updateObj = {$push: updateObj};
   } else {
     // Update key in array
     findObj["roles.key"] = roleid;
-    updateObj["roles.$.role"] = "" + team + role;
+    updateObj["roles.$.role"] = role;
     updateObj = {$set: updateObj};
   }
 
@@ -102,7 +107,44 @@ const upsertRole = async(db, gameid, roleid, team, role) => {
   return roleid;
 };
 
+/**
+ * startGame
+ * Check if there are the correct roles and set the start date.
+ * @param db -- the database connection
+ * @param gameid -- the game id of the game (objectid)
+ */
+const startGame = async(db, gameid) => {
+  const game = await retrieveGame(db, gameid, {
+    startDate: 1,
+    roles: 1
+  });
+
+  if (game.startDate) {
+    throw "Game is already started.";
+  }
+
+  const messages = getRoleMessages(game.roles);
+  if (messages.length) {
+    throw messages;
+  }
+
+  const startDate = new Date();
+
+  // Update game record
+  const updatedGame = await db.collection("game").updateOne(
+    {_id: gameid},
+    {
+      $set: {
+        startDate: startDate
+      }
+    }
+  );
+
+  return startDate;
+};
+
 module.exports = {
   tryGuess,
-  upsertRole
+  upsertRole,
+  startGame
 };
