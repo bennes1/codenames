@@ -11,11 +11,41 @@ class ErrorAlert extends React.Component {
     return nextProps.errorMessage !== this.props.errorMessage;
   }
 
+  /**
+   * renderErrorMessage
+   * Displays the error as a string if it is a string.  If it is an array, then
+   * display as an unordered list.  React does not accept objects.
+   *
+   * @param errorMessage -- the error message to display.
+   */
+  renderErrorMessage(errorMessage) {
+    if (typeof errorMessage === "string") {
+      return errorMessage;
+    } else if (errorMessage.length === 1) {
+      return errorMessage[0];
+    } else {
+      return (
+        <>
+          {"Errors found:"}<br />
+          <ul>
+            {errorMessage.map((elem, index) => {
+              return (
+                <li key={index}>
+                  {elem}
+                </li>
+              );
+            })}
+          </ul>
+        </>
+      );
+    }
+  }
+
   render() {
-  	if (this.props.errorMessage) {
+  	if (this.props.errorMessage && this.props.errorMessage.length > 0) {
 	    return (
 	      <Alert variant="danger">
-	        {this.props.errorMessage}
+	        {this.renderErrorMessage(this.props.errorMessage)}
 	      </Alert>
 	    );
   	}
