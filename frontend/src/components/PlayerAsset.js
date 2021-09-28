@@ -33,6 +33,10 @@ class PlayerAsset extends React.Component {
 		);
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextProps.cover !== this.props.cover;
+  }
+
   /**
    * getBackgroundClasses
    * translates the cover prop into the actual class used to cover the asset.
@@ -53,8 +57,8 @@ class PlayerAsset extends React.Component {
 				{this.props.cover !== "T" ?
 					<Card className={classNames}></Card> :
 					this.props.type === "P" ?
-						<PictureAsset assetid={this.props.assetid} /> :
-						<WordAsset assetid={this.props.assetid} />
+						<PictureAsset pictureData={this.props.asset} /> :
+						<WordAsset word={this.props.asset} />
 				}
 
 			</Card>

@@ -2,8 +2,6 @@ import React from 'react';
 import MasterAsset from './MasterAsset';
 import PlayerAsset from './PlayerAsset';
 import {Container, Row, Col} from 'react-bootstrap';
-import api from '../includes/api';
-import Loading from './Loading';
 
 /**
  * GameGrid
@@ -11,96 +9,50 @@ import Loading from './Loading';
  * It contains fetchers for loading the grid and pulling guesses in the game.
  */
 class GameGrid extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			dataLoaded: false,
-			type: "",
-			starter: "blue",
-			grid: [],
-			errorMessage: ""
-		};
-	}
 
-	/**
-	 * componentDidMount
-	 * After the component mounts, retrieve data for the grid which is assetid,
-	 * color, and if the picture/word was guessed.
-	 */
-	componentDidMount() {
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextProps.grid !== this.props.grid;
+  }
 
-		api.get("retrieveGameGrid", {
-	    	gameid: this.props.gameid,
-	    	role: this.props.role
-			},
-			(data) => {
-				let state = {...this.state};
-				state.dataLoaded = true;
-      	state.errorMessage = '';
-      	state.grid = data.grid;
-      	state.rowSize = data.rowSize;
-      	state.lastid = data.lastid;
-      	this.setState(state);
-			},
-			(error) => {
-				this.setErrorMessage(error);
-			}
-		);
+  renderElement(element, index) {
+    if (this.props.role === "M") {
+      return (
+        <Col key={index}>
+          <MasterAsset
+            cover={element.cover}
+            color={element.color}
+            type={element.type}
+            asset={element.asset}
+            index={index}
+          />
+        </Col>
+      )
+    } else {
+      return (
+        <Col key={index}>
+          <PlayerAsset
+            cover={element.cover}
+            type={element.type}
+            asset={element.asset}
+            team={this.props.team}
+            index={index}
+            gameid={this.props.gameid}
+          />
+        </Col>
+      )
+    }
+  }
 
-    // Set up timer to get more guesses
-    this.timerID = setInterval(
-    	() => this.getMoreGuesses(),
-    	1000
+  renderRow(startIndex, endIndex) {
+    let elements = [];
+    for (let i = startIndex; i !== endIndex; i++) {
+      elements.push(this.renderElement(this.props.grid[i], i));
+    }
+    return (
+      <Row key={startIndex}>
+        {elements}
+      </Row>
     );
-  }
-
-  /**
-   * componentWillUnmount
-   * Need to clean up timer
-   */
-  componentWillUnmount() {
-  	clearInterval(this.timerID);
-  }
-
-  /**
-   * getMoreGuesses
-   * Add to guesses as the game runs.
-   */
-  getMoreGuesses() {
-  	api.get("getMoreGuesses", {
-    		gameid: this.props.gameid,
-    		lastid: this.state.lastid
-			},
-			(data) => {
-				let state = {...this.state};
-  			data.map((element, index) => {
-    			if (index === 0) {
-    				state.lastid = element._id;
-    			}
-    			const y = parseInt(element.position / state.rowSize);
-    			const x = element.position % state.rowSize;
-    			state.grid[y][x].cover = element.result;
-    			return null;
-    		});
-
-    		this.setState(state);
-			},
-			(error) => {
-				this.setErrorMessage(error);
-			}
-		);
-  }
-
-  /**
-   * setErrorMessage
-   * Apply changes to error message inside the "state" object for the form.
-   */
-  setErrorMessage(errorMessage) {
-  	clearInterval(this.timerID);
-    this.setState({
-    	dataLoaded: true,
-    	errorMessage: errorMessage
-    });
   }
 
   /**
@@ -110,52 +62,19 @@ class GameGrid extends React.Component {
    */
 	render() {
 
-		return (
-			<Loading
-				errorMessage={this.state.errorMessage}
-				dataLoaded={this.state.dataLoaded}
-			>
-				<div className="gamegrid">
-					<Container>
-						{this.state.grid.map((items, yindex) => {
-							return (
-								<Row key={yindex}>
-									{items.map((element, xindex) => {
-										if (this.props.role === "M") {
-											return (
-												<Col key={element.key}>
-													<MasterAsset
-														cover={element.cover}
-														color={element.color}
-														type={element.type}
-														assetid={element.assetid}
-														index={element.key}
-														gameid={this.props.gameid}
-													/>
-												</Col>
-											)
-										} else {
-											return (
-												<Col key={element.key}>
-													<PlayerAsset
-														cover={element.cover}
-														type={element.type}
-														assetid={element.assetid}
-														team={this.props.team}
-														index={element.key}
-														gameid={this.props.gameid}
-													/>
-												</Col>
-											)
-										}
+    const length = parseInt(this.props.grid.length);
+    const rowSize = parseInt(this.props.rowSize);
+    let rows = [];
+    for(let i = 0; i < length; i += rowSize) {
+      rows.push(this.renderRow(i, i + rowSize));
+    }
 
-									})}
-								</Row>
-							)
-						})}
-					</Container>
-				</div>
-			</Loading>
+		return (
+			<div className="gamegrid">
+				<Container>
+					{rows}
+				</Container>
+			</div>
 		)
 	}
 }

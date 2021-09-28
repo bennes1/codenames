@@ -22,23 +22,58 @@ async function createGame(db, size, type) {
 		throw "Type is not allowed.";
 	}
 
-	let gameCollection = db.collection("game");
-	let assetCollection = db.collection("asset");
-	let amount = size == "5x5" ? 25 : 20;
+	const gameCollection = db.collection("game");
+	const assetCollection = db.collection("asset");
+	const amount = size == "5x5" ? 25 : 20;
 
-	let doc = {size: size, type: type};
+	let doc = {};
+  doc.size = size;
+  doc.type = type;
 
 	// Create array of words or picture object ids
-	doc.wpList = await setupGridAssets(assetCollection, amount, type);
+	const wpList = await setupGridAssets(assetCollection, amount, type);
+
+  // Actually put the assets into the record.
+  const assetList = await Promise.all(wpList.map(async (elem, index) => {
+    const assetRec = await assetCollection.findOne({_id: elem});
+    return assetRec.value;
+  }));
+  doc.assetGrid = assetList;
 
 	// Create colors
 	results = setupGridColors(size);
-	doc.colorList = results[1];
+	const colorList = results[1];
 	doc.starter = results[0];
+
+  doc.grid = rearrangeGameGrid(amount, type, colorList);
+  doc.roles = [];
 
 	let inserted = await gameCollection.insertOne(doc);
 
 	return inserted.insertedId;
+};
+
+/**
+ * rearrangeGameGrid
+ * @param game -- the game document from the database.
+ * @param role -- "M" for codemaster and "P" for player.
+ * @return double array grid with assetids, colors, and if asset is covered.
+ */
+const rearrangeGameGrid = (amount, type, colorList) => {
+  let grid = [];
+  for(i = 0; i != amount; i++) {
+    let record = {};
+    if (type === "B") {
+      record.type = i % 2 === 1 ? "P" : "W";
+    } else {
+      record.type = type;
+    }
+    record.cover = "T";
+    record.asset = null;
+    record.color = colorList[i];
+    grid.push(record);
+  }
+  return grid;
 };
 
 /**
@@ -59,11 +94,6 @@ async function returnRandAssetArray(collection, type, amount) {
 		return Math.random() - 0.5
 	});
 	return cursor.slice(0, amount);
-	let wpList = [];
-	for(let i = 0; i != amount; i++ ) {
-		wpList[i] = cursor[i].str;
-	}
-	return wpList;
 }
 
 /**
@@ -80,13 +110,14 @@ async function setupGridAssets(collection, amount, type) {
 	let wpList = [];
 	if (type === "B") {
 		// This is different
-		let picAmount = amount % 2 === 1 ? amount / 2 + 1 : amount / 2;
-		let wordAmount = amount / 2;
+    const half = Math.floor(amount / 2);
+		const picAmount = amount % 2 === 1 ? half + 1 : half;
+		const wordAmount = half;
 
-		let pics = await returnRandAssetArray(
+		const pics = await returnRandAssetArray(
 			collection, "P", picAmount
 		);
-		let words = await returnRandAssetArray(
+		const words = await returnRandAssetArray(
 			collection, "W", wordAmount
 		);
 
@@ -148,4 +179,6 @@ function setupGridColors(size) {
 	return [starter, colorGrid];
 }
 
-module.exports = createGame;
+module.exports = {
+  createGame
+};

@@ -31,6 +31,10 @@ class MasterAsset extends React.Component {
 		return classes;
 	}
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextProps.cover !== this.props.cover;
+  }
+
 	render() {
 
 		const coverClassNames = this.getBackgroundClasses();
@@ -43,8 +47,8 @@ class MasterAsset extends React.Component {
 				{this.props.cover !== "T" ?
 					<Card className={coverClassNames}></Card> :
 					this.props.type === "P" ?
-						<PictureAsset assetid={this.props.assetid} /> :
-						<WordAsset assetid={this.props.assetid} />
+						<PictureAsset pictureData={this.props.asset} /> :
+						<WordAsset word={this.props.asset} />
 				}
 
 			</Card>

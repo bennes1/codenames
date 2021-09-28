@@ -1,6 +1,5 @@
 import React from 'react';
 import Card from 'react-bootstrap/Card';
-import api from '../includes/api';
 
 /**
  * PictureAsset
@@ -9,40 +8,17 @@ import api from '../includes/api';
  * @TODO: Make it so that asset does not rerender after loading.
  */
 class PictureAsset extends React.Component {
-	constructor(props) {
-		super(props);
 
-		this.state = {
-			word: 'loading...',
-			picture: null
-		}
-	}
-
-	/**
-	 * componentDidMount
-	 * When this component loads, retrieve the asset from the database.  This will
-	 * show up as base64 encoding.
-	 */
-	componentDidMount() {
-		api.get("retrieveAsset", {
-				assetid: this.props.assetid,
-				type: "P"
-			},
-			(data) => {
-				this.setState({picture: data, word: null});
-			},
-			(error) => {
-				this.setState({word: "Error..."});
-			}
-		);
-	}
+  // Once loaded the first time, keep the asset value until unloaded.
+  shouldComponentUpdate(nextProps, nextState) {
+    return false;
+  }
 
 	render() {
-		const src = "data:image/jpeg;base64," + this.state.picture;
+		const src = "data:image/jpeg;base64," + this.props.pictureData;
 		return (
 			<Card className="asset">
 				<Card.Img src={src} />
-				{this.state.word && <Card.Body>{this.state.word}</Card.Body>}
 			</Card>
 		);
 	}

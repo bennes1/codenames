@@ -1,13 +1,26 @@
 // server.js
 const express = require("express");
 const router = express.Router();
-const { mongoConnect, stringToObjectId } = require("./connection");
 const url = require('url');
-const createGame = require("./createGame");
-const { retrieveGameGrid, findGame } = require("./retrieveGame");
-const { tryGuess, getGuessesAfter } = require("./manipulateGuess");
-const { retrieveAsset } = require("./retrieveAsset");
-const { upsertRole } = require("./modifyRole");
+
+const {
+  mongoConnect,
+  stringToObjectId
+} = require("./connection");
+
+const {
+  createGame
+} = require("./createGame");
+const {
+  retrieveGameInitial,
+  retrieveGameAssets,
+  retrieveGameChanges,
+  findGame
+} = require("./retrieveGame");
+const {
+  tryGuess,
+  upsertRole
+} = require("./modifyGame");
 
 /**
  * runDBRequest
@@ -82,27 +95,32 @@ router.get("/findGame", (req, res) => {
  * This will return all the information required for showing the grid.  This is
  * dependent on the role.  For codemasters, the color information is returned.
  */
-router.get("/retrieveGameGrid", (req, res) => {
+router.get("/retrieveGameInitial", (req, res) => {
 
 	const queryObject = url.parse(req.url,true).query;
-	let gameid = stringToObjectId(queryObject.gameid);
-	let role = queryObject.role;
+	const gameid = stringToObjectId(queryObject.gameid);
+	const role = queryObject.role;
+  const team = queryObject.team;
 
-	runDBRequest(res, (db) => retrieveGameGrid(db, gameid, role));
+	runDBRequest(res, (db) => retrieveGameInitial(db, gameid, role, team));
 });
 
-/**
- * retrieveAsset
- * This returns the content for each asset.  This can be the base64 encoding of
- * an image or it can be a word.
- */
-router.get("/retrieveAsset", (req, res) => {
+router.get("/retrieveGameChanges", (req, res) => {
 
-	const queryObject = url.parse(req.url,true).query;
-	let assetid = stringToObjectId(queryObject.assetid);
-	let type = queryObject.type;
+  const queryObject = url.parse(req.url,true).query;
+  const gameid = stringToObjectId(queryObject.gameid);
+  const role = queryObject.role;
+  const team = queryObject.team;
 
-	runDBRequest(res, (db) => retrieveAsset(db, assetid, type));
+  runDBRequest(res, (db) => retrieveGameChanges(db, gameid, role, team));
+});
+
+router.get("/retrieveGameAssets", (req, res) => {
+
+  const queryObject = url.parse(req.url,true).query;
+  const gameid = stringToObjectId(queryObject.gameid);
+
+  runDBRequest(res, (db) => retrieveGameAssets(db, gameid));
 });
 
 /**
@@ -137,22 +155,6 @@ router.post("/upsertRole", (req, res) => {
   const role = req.body.role;
 
   runDBRequest(res, (db) => upsertRole(db, gameid, roleid, team, role));
-});
-
-/**
- * getMoreGuesses
- * This gets the most recent guesses for the game.  The most recent guessid
- * found is used for retrieval.
- */
-router.get("/getMoreGuesses", async (req, res) => {
-	res.setHeader('Content-Type', 'application/json');
-
-	const queryObject = url.parse(req.url,true).query;
-	let gameid = stringToObjectId(queryObject.gameid);
-	let lastid = stringToObjectId(queryObject.lastid);
-	let type = queryObject.type;
-
-	runDBRequest(res, (db) => getGuessesAfter(db, gameid, lastid));
 });
 
 module.exports = router;
