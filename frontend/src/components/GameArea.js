@@ -66,15 +66,22 @@ class GameArea extends React.Component {
     );
   }
 
+  /**
+   * componentWillUnmount
+   * Clear the pulling of new content.
+   */
   componentWillUnmount() {
     clearInterval(this.timerID);
   }
 
+  /**
+   * getChanges
+   * Runs the database call to get new information if there is any.
+   */
   getChanges() {
     api.get("retrieveGameChanges", {
         gameid: this.props.gameid,
-        role: this.props.role,
-        team: this.props.team
+        role: this.props.role
       },
       (data) => {
         let state = {...this.state};
@@ -88,6 +95,11 @@ class GameArea extends React.Component {
     );
   }
 
+  /**
+   * combineGrids
+   * Adds the asset info to the grid.  This is two calls to the database.
+   * Also deletes the temporary arrays used to store the separate grid infos.
+   */
   combineGrids() {
     let grid = null, dataLoaded = false;
     if (this.gridAssetData && this.initialGridData) {
@@ -108,12 +120,20 @@ class GameArea extends React.Component {
     return [dataLoaded, grid];
   }
 
+  /**
+   * setErrorMessage
+   * Sets the error message.
+   */
   setErrorMessage(error) {
     let state = {...this.state};
     state.errorMessage = error;
     this.setState(state);
   }
 
+  /**
+   * render
+   * Renders the game area.
+   */
 	render() {
 		return (
       <Loading
@@ -125,7 +145,6 @@ class GameArea extends React.Component {
             grid={this.state.grid}
             rowSize={this.state.rowSize}
             role={this.props.role}
-            team={this.props.team}
 
             // Still need this for tryGuess!
             gameid={this.props.gameid}

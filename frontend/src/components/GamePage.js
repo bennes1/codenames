@@ -12,6 +12,10 @@ import api from '../includes/api';
  */
 class GamePage extends React.Component {
 
+  /**
+   * constructor
+   * Set up defaults of false and null.  Bind the setRole to this class.
+   */
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -59,7 +63,12 @@ class GamePage extends React.Component {
   	this.setState(state);
   }
 
-
+  /**
+   * render
+   * Render GamePage.  If has not found game or game doesn't exist, display
+   * error.  Otherwise, if game isn't started or role info doesn't exist, go to
+   * RoleArea.  Otherwise, go to GameArea.
+   */
 	render() {
 
 		return (

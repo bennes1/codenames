@@ -10,6 +10,11 @@ import api from '../includes/api';
  * @TODO: Make it more colorful and possibly with a meeple.
  */
 class RoleDDL extends React.Component {
+
+  /**
+   * constructor
+   * Set up the defaults.
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -22,6 +27,10 @@ class RoleDDL extends React.Component {
     this.handleClick = this.handleClick.bind(this);
   }
 
+  /**
+   * shouldComponentUpdate
+   * Only update when the text changes.
+   */
   shouldComponentUpdate(nextProps, nextState) {
     return nextState.text !== this.state.text;
   }
@@ -76,6 +85,10 @@ class RoleDDL extends React.Component {
 
   }
 
+  /**
+   * render
+   * Renders the dropdownlist.
+   */
   render() {
     return (
       <Dropdown id="roleDDL">
@@ -102,4 +115,5 @@ class RoleDDL extends React.Component {
     );
   }
 }
+
 export default RoleDDL;

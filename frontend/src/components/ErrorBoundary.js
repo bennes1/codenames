@@ -1,27 +1,34 @@
 import React from 'react';
 
+/**
+ * ErrorBoundary
+ * Displays a message when one of the subcomponents does not load correctly.
+ */
 class ErrorBoundary extends React.Component {
+
+  /**
+   * constructor
+   * Sets the initial state of hasError to false.
+   */
   constructor(props) {
     super(props);
     this.state = { hasError: false };
   }
 
-  // Update state so the next render will show the fallback UI.
+  /**
+   * getDerivedStateFromError
+   * Update state so the next render will show the fallback UI.
+   */
   static getDerivedStateFromError(error) {
     return {
       hasError: true
     };
   }
 
-  logErrorToMyService(error, errorInfo) {
-    return null;
-  }
-
-  // You can also log the error to an error reporting service
-  componentDidCatch(error, errorInfo) {
-    this.logErrorToMyService(error, errorInfo);
-  }
-
+  /**
+   * render
+   * Renders the ErrorBoundary.
+   */
   render() {
     // You can render any custom fallback UI
     if (this.state.hasError) {

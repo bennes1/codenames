@@ -10,10 +10,20 @@ import {Container, Row, Col} from 'react-bootstrap';
  */
 class GameGrid extends React.Component {
 
+  /**
+   * shouldComponentUpdate
+   * Only update component when the grid changes.
+   */
   shouldComponentUpdate(nextProps, nextState) {
     return nextProps.grid !== this.props.grid;
   }
 
+  /**
+   * renderElement
+   * Based on the role, use MasterAsset or PlayerAsset.
+   * @param element -- the element from the grid.
+   * @param index -- the index of the element for key purposes.
+   */
   renderElement(element, index) {
     if (["RM", "BM"].indexOf(this.props.role) !== -1) {
       return (
@@ -43,6 +53,12 @@ class GameGrid extends React.Component {
     }
   }
 
+  /**
+   * renderRow
+   * Render a row of the grid.
+   * @param startIndex -- the start index to render
+   * @param endIndex -- the end index to render
+   */
   renderRow(startIndex, endIndex) {
     let elements = [];
     for (let i = startIndex; i !== endIndex; i++) {

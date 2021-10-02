@@ -89,6 +89,10 @@ class CreateGameForm extends React.Component {
     return "";
   }
 
+  /**
+   * render
+   * Renders the form.
+   */
   render() {
     return (
       <form onSubmit = {this.handleSubmit} id="createGameForm">

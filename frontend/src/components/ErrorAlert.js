@@ -41,6 +41,10 @@ class ErrorAlert extends React.Component {
     }
   }
 
+  /**
+   * render
+   * Renders the error alert.
+   */
   render() {
   	if (this.props.errorMessage && this.props.errorMessage.length > 0) {
 	    return (

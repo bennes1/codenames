@@ -6,6 +6,11 @@ import Dropdown from 'react-bootstrap/Dropdown';
  * This is the dropdownlist for the type.  Type is Pictures, Words, or Both.
  */
 class TypeDDL extends React.Component {
+
+  /**
+   * constructor
+   * Sets up the defaults.
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -16,10 +21,18 @@ class TypeDDL extends React.Component {
     this.handleClick = this.handleClick.bind(this);
   }
 
+  /**
+   * shouldComponentUpdate
+   * Only update when the text changes.
+   */
   shouldComponentUpdate(nextProps, nextState) {
-    return nextState.value !== this.state.value;
+    return nextState.text !== this.state.text;
   }
 
+  /**
+   * handleClick
+   * Changes the dropdownlist and notifies the parent form.
+   */
   handleClick(event) {
     let state = {text: event.target.text};
     switch (state.text) {
@@ -40,6 +53,10 @@ class TypeDDL extends React.Component {
     this.props.parentCallback(state);
   }
 
+  /**
+   * render
+   * Renders the dropdownlist.
+   */
   render() {
     return (
       <Dropdown id="typeDDL">

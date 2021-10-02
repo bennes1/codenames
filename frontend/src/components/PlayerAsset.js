@@ -33,6 +33,10 @@ class PlayerAsset extends React.Component {
 		);
   }
 
+  /**
+   * shouldComponentUpdate
+   * Only update when the asset is guessed.
+   */
   shouldComponentUpdate(nextProps, nextState) {
     return nextProps.cover !== this.props.cover;
   }
@@ -46,6 +50,11 @@ class PlayerAsset extends React.Component {
 		return classes;
 	}
 
+  /**
+   * render
+   * If asset was guessed, show a solid color for that card.  Otherwise, if the
+   * asset type is picture, show PictureAsset.  Otherwise, show WordAsset.
+   */
 	render() {
 
 		const classNames = this.getBackgroundClasses();

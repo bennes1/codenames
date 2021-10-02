@@ -112,6 +112,7 @@ const upsertRole = async(db, gameid, roleid, role) => {
  * Check if there are the correct roles and set the start date.
  * @param db -- the database connection
  * @param gameid -- the game id of the game (objectid)
+ * @return startDate -- when the game starts
  */
 const startGame = async(db, gameid) => {
   const game = await retrieveGame(db, gameid, {

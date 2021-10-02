@@ -4,16 +4,21 @@ import Card from 'react-bootstrap/Card';
 /**
  * PictureAsset
  * This renders an asset from a picture.
- *
- * @TODO: Make it so that asset does not rerender after loading.
  */
 class PictureAsset extends React.Component {
 
-  // Once loaded the first time, keep the asset value until unloaded.
+  /**
+   * shouldComponentUpdate
+   * Once loaded the first time, keep the asset value until unloaded.
+   */
   shouldComponentUpdate(nextProps, nextState) {
     return false;
   }
 
+  /**
+   * render
+   * Shows the picture in the card using the base64 encoding in the database.
+   */
 	render() {
 		const src = "data:image/jpeg;base64," + this.props.pictureData;
 		return (

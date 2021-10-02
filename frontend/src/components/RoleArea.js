@@ -14,6 +14,11 @@ import api from '../includes/api';
  * @TODO: expand the waiting area
  */
 class RoleArea extends React.Component {
+
+  /**
+   * constructor
+   * Set up defaults and bind event functions to this component.
+   */
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -74,6 +79,10 @@ class RoleArea extends React.Component {
     );
   }
 
+  /**
+   * render
+   * Renders the RoleArea.
+   */
 	render() {
     const errorMessage = [].concat(
       this.state.roleErrorMessage,
